@@ -208,6 +208,22 @@ K-means is a venerable clustering algorithm which has gained the trust of resear
 However, when the dimensionality, data set size, or number of desired clusters is large, k-means becomes prohibitively expensive.
 Attempts at increasing the performance of k-means mainly fall into two categories: working on improving the core algorithm or improving the performance through some other means (e.g. K-means++ \ref{Arthur2007}).
 This work focuses on the former method, which includes approximation and optimization.
+Within this realm, work has been done previously on structural or incremental optimization by \ref{Pelleg1999} and \ref{Drake2012} and on approximation by several groups (\ref{Guha2008}, \ref{Czumaj2007), \ref{Philbin2007}, \ref{Scully2010}, \ref{Wang2012}).
+While this previous work has been of high quality, none of the innovations have gotten much traction or widespread use.
+It has been hypothesized that in order to gain popularity in practical use, a replacement for k-means must meet three requirements: equivalent clustering to traditional k-means, consistent and significant performance gains, and simple to use.
+
+The proposed work aims to satisfy those three requirements.
+It utilizes the triangle inequality in a novel way to keep track of two bounds: the upper bound on the distance from a given point to its assigned cluster center and the lower bound on the distance from the point to any other center.
+These two bounds act to reduce the number of distance calculations that need to be performed during the assignment step of k-means.
+This is achieved through two kinds of filtering: group/global filtering and local filtering.
+Global filtering works to determine if a point needs to be assigned to a different cluster based on the movement of the cluster centers.
+If centers change by a large amount, then it is more likely that points need their cluster assignment checked.
+Group filtering generalizes the global filtering by initially grouping the clusters into groups before the first iteration of k-means and applying the global filter to those groups.
+Local filtering is performed on any groups of cluster centers that make it through the group filter.
+Centers that get filtered by the local filter do not have their distances to the data points calculated.
+
+Additionally, a method to optimize the second step of k-means, the center update step, is proposed.
+The new method updates the cluster centers by modifying them, rather than calculating the average across all points contained in that cluster.
 
 \section{Preliminary Plan}
 
