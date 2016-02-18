@@ -735,7 +735,7 @@
  \let\maketitle\relax
  \let\@maketitle\relax
  \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\gdef\@subtitle{}\let\thanks\relax
- \@copyrightspace}
+ }%\@copyrightspace}  % THIS REMOVES SPACE UNDER FIRST COLUMN
 
 %% CHANGES ON NEXT LINES
 \newif\if@ll % to record which version of LaTeX is in use
@@ -1025,7 +1025,7 @@
 %%% and inserting the predefined string at the bottom (with a negative
 %%% displacement to offset the space allocated for a non-existent
 %%% caption).
-%%%
+%%
 \newtoks\copyrightnotice
 \def\ftype@copyrightbox{8}
 \def\@copyrightspace{
@@ -1033,13 +1033,15 @@
 \begin{center}
 \setlength{\unitlength}{1pc}
 \ifnum\ACM@basesize=9
-\begin{picture}(20,6) %Space for copyright notice
-\put(0,-0.95){\crnotice{\@toappear}}
+%\begin{picture}(20,6) %Space for copyright notice
+\begin{picture}(0,0) %Space for copyright notice
+%\put(0,-0.95){\crnotice{\@toappear}}
 \end{picture}
 \fi
 \ifnum\ACM@basesize=10
-\begin{picture}(20,7) %Space for copyright notice
-\put(0,-0.95){\crnotice{\@toappear}}
+%\begin{picture}(20,7) %Space for copyright notice
+\begin{picture}(0,0) %Space for copyright notice
+%\put(0,-0.95){\crnotice{\@toappear}}
 \end{picture}
 \fi
 \end{center}
