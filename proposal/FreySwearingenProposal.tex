@@ -47,6 +47,10 @@
 
 \documentclass{sig-alternate-05-2015}
 
+\usepackage{epstopdf}
+\usepackage{float}
+\usepackage{graphicx}
+
 
 \begin{document}
 
@@ -79,7 +83,7 @@
 % --- End of Author Metadata ---
 
 \title{CSE 847 Project Proposal}
-\subtitle{Title Goes Here}
+\subtitle{Yinyang K-means}
 %\titlenote{A full version of this paper is available as
 %\textit{Author's Guide to Preparing ACM SIG Proceedings Using
 %\LaTeX$2_\epsilon$\ and BibTeX} at
@@ -146,9 +150,9 @@ Thomas Swearingen\\
 % number that will appear in the \additionalauthors section.
 
 \maketitle
-\begin{abstract}
-Abstract goes here.
-\end{abstract}
+%\begin{abstract}
+%Abstract goes here.
+%\end{abstract}
 
 
 %
@@ -203,12 +207,19 @@ Abstract goes here.
 
 \section{Problem Description}
 
+K-means is a popular machine learning algorithm for clustering.
+As the amount of data has grown ever larger, then the limitation of the classic K-mean algorithm has become more apparent.
+Specifically, the K-means algorithm is linear in data set size which reduces the usability of the algorithm with large datasets.
+However, Ding \textit{et al.} propose Yinyang K-means \cite{Ding2015} which seeks to solve this problem.
+The authors assert Yinyang K-means can be used in place of classical K-means with no extra conditions or requirements while simultaneously achieving an order of magnitude higher performance.
+We intend to explore the theoretical properties of this proposed method and verify the authors' claim of a significant speed up.
+
 \section{Survey}
 K-means is a venerable clustering algorithm which has gained the trust of researchers through years of use.
 However, when the dimensionality, data set size, or number of desired clusters is large, k-means becomes prohibitively expensive.
-Attempts at increasing the performance of k-means mainly fall into two categories: working on improving the core algorithm or improving the performance through some other means (e.g. K-means++ \ref{Arthur2007}).
+Attempts at increasing the performance of k-means mainly fall into two categories: working on improving the core algorithm or improving the performance through some other means (e.g. K-means++ \cite{Arthur2007}).
 This work focuses on the former method, which includes approximation and optimization.
-Within this realm, work has been done previously on structural or incremental optimization by \ref{Pelleg1999} and \ref{Drake2012} and on approximation by several groups (\ref{Guha2008}, \ref{Czumaj2007), \ref{Philbin2007}, \ref{Scully2010}, \ref{Wang2012}).
+Within this realm, work has been done previously on structural or incremental optimization by \cite{Pelleg1999} and \cite{Drake2012} and on approximation by several groups (\cite{Guha1998}, \cite{Czumaj2007}), \cite{Philbin2007}, \cite{Sculley2010}, \cite{Wang2015}).
 While this previous work has been of high quality, none of the innovations have gotten much traction or widespread use.
 It has been hypothesized that in order to gain popularity in practical use, a replacement for k-means must meet three requirements: equivalent clustering to traditional k-means, consistent and significant performance gains, and simple to use.
 
@@ -226,6 +237,45 @@ Additionally, a method to optimize the second step of k-means, the center update
 The new method updates the cluster centers by modifying them, rather than calculating the average across all points contained in that cluster.
 
 \section{Preliminary Plan}
+
+The theory thrust of the project consist of 3 requirements and a 4th optional task:
+
+\begin{itemize}
+\item Show all details of the proof of correctness
+\item Implement the algorithm
+\item Test algorithm on synthetic dataset to verify theoretical properties
+\item \textit{Test algorithm on a real-world dataset}
+\end{itemize}
+
+Figure \ref{fig:timeline} shows the overview of our project timeline.
+We first plan to write up the introduction and problem description that will be included in the intermediate project report and the final project report.
+This document includes the first draft of those section.
+We will expand on them over time to give a through description of the work and place it in the context of other related works.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/timeline.eps}
+    \caption{Project timeline showing key steps in the project. A solid color border indicates required step while a dotted line border indicates an optional step that will only be completed if there is time.}
+    \label{fig:timeline}
+\end{figure*}
+
+Once we have a through understanding of the problem and the algorithm, we can generate data which will test the algorithm.
+The synthetic data should push the limits of the algorithm.
+Since the authors intend for Yinyang K-means to extend classic K-means to better cope with large datasets, then the synthetic data should be quite large as well.
+
+The next step is proving the theoretical properties of Yinyang K-means.
+This includes the Global-Filtering Condition and the Local-Filtering Condition.
+The Global-Filtering Condition asserts that cluster assignment of a point is only necessary if the cluster centroid changes drastically.
+The Local-Filtering Condition allows skipping distance calculations between a point and a centroid if that point is with some set distance to another centroid.
+We will also investigate the authors' claim that Yinyang K-means achieves the same performance as classic K-means with an order of magnitude performance increase.
+
+The last part of the project involves implementing the algorithm on a computer.
+Once it is implemented and verified to be correct, we can then test the algorithm on the synthetic data we generated earlier.
+The synthetic data will be created in a such a way that the theoretical properties of the algorithm will be tested.
+This will tell us that these properties actually hold in practice.
+If there is time, we also plan to try the algorithm on a real-world dataset which will hopefully see the same benefits as the synthetic data.
+
+
 
 %
 % The following two commands are all you need in the
