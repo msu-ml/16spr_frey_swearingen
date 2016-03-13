@@ -50,6 +50,7 @@
 \usepackage{epstopdf}
 \usepackage{float}
 \usepackage{graphicx}
+\usepackage{amsmath}
 
 
 \begin{document}
@@ -216,12 +217,18 @@ The authors assert Yinyang K-means can be used in place of classical K-means wit
 We intend to explore the theoretical properties of this proposed method and verify the authors' claim of a significant speed up.
 
 \section{Introduction}
+
 K-means is a venerable clustering algorithm which has gained the trust of researchers through years of use.
 However, when the dimensionality, data set size, or number of desired clusters is large, k-means becomes prohibitively expensive.
 Attempts at increasing the performance of k-means mainly fall into two categories: working on improving the core algorithm or improving the performance through some other means (e.g. K-means++ \cite{Arthur2007}).
 This work focuses on the former method, which includes approximation and optimization.
-Within this realm, work has been done previously on structural or incremental optimization by \cite{Pelleg1999} and \cite{Drake2012} and on approximation by several groups (\cite{Guha1998}, \cite{Czumaj2007}), \cite{Philbin2007}, \cite{Sculley2010}, \cite{Wang2015}).
+Within this realm, work has been done previously on structural or incremental optimization by \cite{Pelleg1999}, \cite{Elkan2003}, and \cite{Drake2012} and on approximation by several groups (\cite{Guha1998}, \cite{Czumaj2007}), \cite{Philbin2007}, \cite{Sculley2010}, \cite{Wang2015}).
 While this previous work has been of high quality, none of the innovations have gotten much traction or widespread use.
+
+In \textit{Drake and Hamerly} \cite{Drake2012}, the authors keep $b$ lower bounds, where $b<k$, $k$ being the number of bounds kept in \textit{Elkan} \cite{Elkan2003}.
+These bounds are the distances to the $b$ nearest neighbors of the point in question, and are kept by tracking a point's center and the $1\leq z\leq b$ closest centers.
+Of particular note, \textit{Drake and Hamerly} tune $b$ adaptively as follows: start at $b=\frac{k}{4}$; after each iteration, $b$ becomes the number of useful bounds while staying at least $\frac{k}{8}$.
+
 It has been hypothesized that in order to gain popularity in practical use, a replacement for k-means must meet three requirements: equivalent clustering to traditional k-means, consistent and significant performance gains, and simple to use.
 
 The proposed work aims to satisfy those three requirements.
