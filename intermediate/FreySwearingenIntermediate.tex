@@ -225,6 +225,19 @@ This work focuses on the former method, which includes approximation and optimiz
 Within this realm, work has been done previously on structural or incremental optimization by \cite{Pelleg1999}, \cite{Elkan2003}, and \cite{Drake2012} and on approximation by several groups (\cite{Guha1998}, \cite{Czumaj2007}), \cite{Philbin2007}, \cite{Sculley2010}, \cite{Wang2015}).
 While this previous work has been of high quality, none of the innovations have gotten much traction or widespread use.
 
+In \textit{Elkan} \cite{Elkan2003}, the author uses two lemmas to find a lower bound using the triangle inequality:
+\begin{flushleft}
+\begin{enumerate}
+\item For a point $x$ and centers $b$ and $c$, if $d(b,c)\geq 2d(x,b)$ then $d(x,c)\geq d(x,b)$.
+\item For a point $x$ and centers $b$ and $c$, $d(x,c)\geq \max\{0, d(x,b)-d(b,c)\}$.
+\end{enumerate}
+\end{flushleft}
+The first lemma is used to avoid calculating distances to centers in cases where $\frac{1}{2}d(c,c')\geq d(x,c)$.
+The second lemma lets the algorithm use a lower bound $l\leq d(x,b)$, where $x$ is any data point and $b$ is any center.
+As long as center $b$ does not move too much in an iteration, then $l$ can be used as $d(x,b)$ without actually calculating the distance.
+Empirically, Elkan's algorithm speeds up k-means by factors from 1.50 to 351.
+The algorithm performs better with higher $k$ and lower dimensionality - of the four public datasets used in evaluation, performance increased as k varied from 3 to 20 to 100 and dimensionality decreased from 784 to 2.
+
 In \textit{Drake and Hamerly} \cite{Drake2012}, the authors keep $b$ lower bounds, where $b<k$, $k$ being the number of bounds kept in \textit{Elkan} \cite{Elkan2003}.
 These bounds are the distances to the $b$ nearest neighbors of the point in question, and are kept by tracking a point's center and the $1\leq z\leq b$ closest centers.
 Of particular note, \textit{Drake and Hamerly} tune $b$ adaptively as follows: start at $b=\frac{k}{4}$; after each iteration, $b$ becomes the number of useful bounds while staying at least $\frac{k}{8}$.
