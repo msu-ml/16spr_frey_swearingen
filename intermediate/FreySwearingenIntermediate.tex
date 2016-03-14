@@ -238,7 +238,7 @@ As long as center $b$ does not move too much in an iteration, then $l$ can be us
 Empirically, Elkan's algorithm speeds up k-means by factors from 1.50 to 351.
 The algorithm performs better with higher $k$ and lower dimensionality - of the four public datasets used in evaluation, performance increased as k varied from 3 to 20 to 100 and dimensionality decreased from 784 to 2.
 
-In \textit{Drake and Hamerly} \cite{Drake2012}, the authors keep $b$ lower bounds, where $b<k$, $k$ being the number of bounds kept in \textit{Elkan} \cite{Elkan2003}.
+In \textit{Drake and Hamerly} \cite{Drake2012}, the authors keep $b$ lower bounds where $b<k$, $k$ being the number of bounds kept in \textit{Elkan} \cite{Elkan2003}.
 These bounds are the distances to the $b$ nearest neighbors of the point in question, and are kept by tracking a point's center and the $1\leq z\leq b$ closest centers.
 Of particular note, \textit{Drake and Hamerly} tune $b$ adaptively as follows: start at $b=\frac{k}{4}$; after each iteration, $b$ becomes the number of useful bounds while staying at least $\frac{k}{8}$.
 Tests that Drake and Hamerly performed on their algorithm show that for a medium range of dimensions (~25-125), it out-performs algorithms by Elkan[\cite{Elkan2003}, Hamerly \cite{Hamerly2010}, and the traditional k-means.
@@ -256,7 +256,7 @@ Local filtering is performed on any groups of cluster centers that make it throu
 Centers that get filtered by the local filter do not have their distances to the data points calculated.
 
 Additionally, a method to optimize the second step of k-means, the center update step, is proposed.
-The new method updates the cluster centers by modifying them, rather than calculating the average across all points contained in that cluster.
+The new method updates the cluster centers by modifying them rather than calculating the average across all points contained in that cluster.
 
 \section{Preliminary Plan}
 
