@@ -241,6 +241,7 @@ The algorithm performs better with higher $k$ and lower dimensionality - of the 
 In \textit{Drake and Hamerly} \cite{Drake2012}, the authors keep $b$ lower bounds, where $b<k$, $k$ being the number of bounds kept in \textit{Elkan} \cite{Elkan2003}.
 These bounds are the distances to the $b$ nearest neighbors of the point in question, and are kept by tracking a point's center and the $1\leq z\leq b$ closest centers.
 Of particular note, \textit{Drake and Hamerly} tune $b$ adaptively as follows: start at $b=\frac{k}{4}$; after each iteration, $b$ becomes the number of useful bounds while staying at least $\frac{k}{8}$.
+Tests that Drake and Hamerly performed on their algorithm show that for a medium range of dimensions (~25-125), it out-performs algorithms by Elkan[\cite{Elkan2003}, Hamerly \cite{Hamerly2010}, and the traditional k-means.
 
 It has been hypothesized that in order to gain popularity in practical use, a replacement for k-means must meet three requirements: equivalent clustering to traditional k-means, consistent and significant performance gains, and simple to use.
 
