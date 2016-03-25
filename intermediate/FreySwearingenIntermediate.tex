@@ -262,6 +262,13 @@ Tests that Drake and Hamerly performed on their algorithm show that for a medium
 
 It has been hypothesized that in order to gain popularity in practical use, a replacement for k-means must meet three requirements: equivalent clustering to traditional k-means, consistent and significant performance gains, and simple to use.
 
+\begin{figure*}[!tb]
+    \centering
+    \includegraphics[width=\textwidth]{figures/timeline.eps}
+    \caption{Project timeline showing key steps in the project. A solid color border indicates required step while a dotted line border indicates an optional step that will only be completed if there is time.}
+    \label{fig:timeline}
+\end{figure*}
+
 The proposed work aims to satisfy those three requirements.
 It utilizes the triangle inequality in a novel way to keep track of two bounds: the upper bound on the distance from a given point to its assigned cluster center and the lower bound on the distance from the point to any other center.
 These two bounds act to reduce the number of distance calculations that need to be performed during the assignment step of k-means.
@@ -291,13 +298,6 @@ We have completed the introduction and problem description that will be included
 This document includes the a near-final draft of those sections.
 We will continue to refine the introduction and problem description as needed.
 
-\begin{figure*}[!htbp]
-    \centering
-    \includegraphics[width=\textwidth]{figures/timeline.eps}
-    \caption{Project timeline showing key steps in the project. A solid color border indicates required step while a dotted line border indicates an optional step that will only be completed if there is time.}
-    \label{fig:timeline}
-\end{figure*}
-
 We have completed the code that generates our synthetic data
 
 The next step is proving the theoretical properties of Yin-yang K-means.
@@ -315,17 +315,7 @@ If there is time, we also plan to try the algorithm on a real-world dataset whic
 
 \section{Data}
 
-The main claim of the authors of the is the ability to apply the K-means clustering algorithm to data which is large.
-Thus, our synthetic dataset should attempt to verify this claim by including large amounts of data.
-It will also be interesting to see how the performance changes as the data size grows.
-
-There are three primary parameters that we vary in our synthetic dataset.
-The first parameter is the number of clusters ($N_C$) where we use 5 different values: 100, 1,000, 10,000, 100,000, and 1,000,000.
-The second parameter is the number of features ($N_F$)  where we use 3 different values: 100, 1,000, and 10,000.
-The third and final parameter is the number of samples per cluster ($N_S$) where we use 4 different values: 100, 1,000, 10,000, and 100,000.
-This information is summarized in Table \ref{tab:dataparams}.
-
-\begin{table*}[!htbp]
+\begin{table*}[!tb]
 \caption{Data Parameters}
 \begin{center}
 \begin{tabular}{|c||c||c|}
@@ -343,16 +333,22 @@ This information is summarized in Table \ref{tab:dataparams}.
 \label{tab:dataparams}
 \end{table*}
 
+The main claim of the authors of the is the ability to apply the K-means clustering algorithm to data which is large.
+Thus, our synthetic dataset should attempt to verify this claim by including large amounts of data.
+It will also be interesting to document how the performance changes as the data size grows.
+The authors also claim that clustering results of Yinyang K-means is the same as standard K-means.
+So we vary the ``difficulty" of clustering the data by varying the average euclidean distance of the mean of all of the clusters.
+
 
 We generate the data as multi-variate Gaussians.
-An overview of this method is shown in Figure \ref{fig:meangeneration}.
-We first generate a set of $N_C$ means.
-We don't want the clustering to be too simple so we introduce an average mean euclidean distance parameter ($\mu_\text{euc}$).
+We first generate an $N_C$-sized set of means.
+An overview of this process is shown in Figure \ref{fig:meangeneration}.
+We want to vary the average distance between clusters so we introduce an average mean euclidean distance parameter ($\mu_\text{euc}$).
 We then use the \texttt{randn} MATLAB function to generate a set of potential means of size $10*N_C$ each with $N_F$ features.
 We then sample from the set $N_C$ means and calculate their average euclidean distance and compare it to $\mu_\text{euc}$.
 If it is within the tolerance ($\delta$), we use this as the set of $N_C$ means for a single run.
 
-\begin{figure}[!htbp]
+\begin{figure}[!tb]
     \centering
     \includegraphics[width=\linewidth]{figures/MeanGeneration.eps}
     \caption{Overview of the mean generation step. A $N_C$-sized set of means is sampled from the $10 * N_C$-sized set of potential means. If the sample has an average euclidean distance within the tolerance it is selected. If not, a new sample is selected.}
@@ -362,11 +358,19 @@ If it is within the tolerance ($\delta$), we use this as the set of $N_C$ means 
 We then generate a random matrix $B$ and then generate a random positive semi-definite matrix $C = B^\text{T} B$ that we use as the covariance.
 We do this for each mean in the run.
 Using the mean and the covariance we use the \texttt{mvnrnd} MATLAB to generate the data with $N_S$ samples.
-To demonstrate the data we ran the above procedure with $N_C = 5$, $N_F = 2$, and $N_S = 100$.
+
+
+There are three primary parameters that we vary in our synthetic dataset.
+The first parameter is the number of clusters ($N_C$) where we use 5 different values: 100, 1,000, 10,000, 100,000, and 1,000,000.
+The second parameter is the number of features ($N_F$)  where we use 3 different values: 100, 1,000, and 10,000.
+The third and final parameter is the number of samples per cluster ($N_S$) where we use 4 different values: 100, 1,000, 10,000, and 100,000.
+This information is summarized in Table \ref{tab:dataparams}.
+
+To demonstrate the data generation described above, we ran the above procedure with $N_C = 5$, $N_F = 2$, and $N_S = 100$.
 Since the data is two dimensional, we can visualize it.
 Two examples are shown in Figure \ref{fig:dataexamples}.
 
-\begin{figure}[!htbp]
+\begin{figure}[!tb]
 \centering
 \subfloat[Example Data]{\includegraphics[width = 0.5\linewidth]{figures/RandDataViz.eps}}
 ~
