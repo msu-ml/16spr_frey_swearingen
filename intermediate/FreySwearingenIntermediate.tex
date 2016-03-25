@@ -345,11 +345,19 @@ This information is summarized in Table \ref{tab:dataparams}.
 
 
 We generate the data as multi-variate Gaussians.
+An overview of this method is shown in Figure \ref{fig:meangeneration}.
 We first generate a set of $N_C$ means.
 We don't want the clustering to be too simple so we introduce an average mean euclidean distance parameter ($\mu_\text{euc}$).
 We then use the \texttt{randn} MATLAB function to generate a set of potential means of size $10*N_C$ each with $N_F$ features.
 We then sample from the set $N_C$ means and calculate their average euclidean distance and compare it to $\mu_\text{euc}$.
 If it is within the tolerance ($\delta$), we use this as the set of $N_C$ means for a single run.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=\linewidth]{figures/MeanGeneration.eps}
+    \caption{Overview of the mean generation step. A $N_C$-sized set of means is sampled from the $10 * N_C$-sized set of potential means. If the sample has an average euclidean distance within the tolerance it is selected. If not, a new sample is selected.}
+    \label{fig:meangeneration}
+\end{figure}
 
 We then generate a random matrix $B$ and then generate a random positive semi-definite matrix $C = B^\text{T} B$ that we use as the covariance.
 We do this for each mean in the run.
