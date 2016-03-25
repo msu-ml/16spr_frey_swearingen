@@ -238,6 +238,22 @@ As long as center $b$ does not move too much in an iteration, then $l$ can be us
 Empirically, Elkan's algorithm speeds up k-means by factors from 1.50 to 351.
 The algorithm performs better with higher $k$ and lower dimensionality - of the four public datasets used in evaluation, performance increased as k varied from 3 to 20 to 100 and dimensionality decreased from 784 to 2.
 
+In one work from the approximation tack, Sculley \cite{Sculley2010} uses mini batches to greatly improve on the accuracy of the online stochastic gradient descent method demonstrated by Battou and Bengio in \cite{Bottou1995}.
+In this approach, Sculley first finds the closest centers to each data point in the mini batch.
+An array $v$ tracks the number of data points associated with a given center $c$.
+The main loop iterates over the data points:
+\begin{flushleft}
+\begin{enumerate}
+\item Retrieve the center associated with this point.
+\item Update $\emph{v}[c]$.
+\item Calculate the center's learning rate as $\eta=\frac{1}{\emph{v}[c]}$.
+\item Perform the gradient step for center $c$.
+\end{enumerate}
+\end{flushleft}
+
+Sculley's experiments showed that this mini-batch gradient descent with batch size 1000 converged orders of magnitude faster than classic k-means while achieving much better accuracy than Bottou and Bengio's method.
+(Here, the classic algorithm is treated as the ground truth for calculating accuracy.)
+
 In \textit{Drake and Hamerly} \cite{Drake2012}, the authors keep $b$ lower bounds where $b<k$, $k$ being the number of bounds kept in \textit{Elkan} \cite{Elkan2003}.
 These bounds are the distances to the $b$ nearest neighbors of the point in question, and are kept by tracking a point's center and the $1\leq z\leq b$ closest centers.
 Of particular note, \textit{Drake and Hamerly} tune $b$ adaptively as follows: start at $b=\frac{k}{4}$; after each iteration, $b$ becomes the number of useful bounds while staying at least $\frac{k}{8}$.
@@ -270,9 +286,9 @@ The theory thrust of the project consists of 3 requirements and a 4th optional t
 \end{itemize}
 
 Figure \ref{fig:timeline} shows the overview of our project timeline.
-We first plan to write up the introduction and problem description that will be included in the intermediate project report and the final project report.
-This document includes the first draft of those sections.
-We will expand on them over time to give a thorough description of the work and place it in the context of other related works.
+We have completed the introduction and problem description that will be included in the intermediate project report and the final project report.
+This document includes the a near-final draft of those sections.
+We will continue to refine the introduction and problem description as needed.
 
 \begin{figure*}
     \centering
@@ -281,14 +297,13 @@ We will expand on them over time to give a thorough description of the work and 
     \label{fig:timeline}
 \end{figure*}
 
-Once we have a thorough understanding of the problem and the algorithm, we can generate data which will test the algorithm.
-The synthetic data should push the limits of the algorithm.
-Since the authors intend for Yinyang K-means to extend classic K-means to better cope with large datasets, then the synthetic data should be quite large as well.
+We have completed the code that generates our synthetic data
 
 The next step is proving the theoretical properties of Yin-yang K-means.
 This includes the Global-Filtering Condition and the Local-Filtering Condition.
 The Global-Filtering Condition asserts that cluster assignment of a point is only necessary if the cluster centroid changes drastically.
 The Local-Filtering Condition allows skipping distance calculations between a point and a centroid if that point is with some set distance to another centroid.
+We have made some progress on verifying these theoretical properties, but it is taking somewhat longer than expected.
 We will also investigate the authors' claim that Yinyang K-means achieves the same performance as classic K-means with an order of magnitude performance increase.
 
 The last part of the project involves implementing the algorithm on a computer.
