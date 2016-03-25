@@ -7,6 +7,8 @@ SampleSizes = [1e2 1e3 1e4 1e5];
 for NumClusters = ClusterSizes
     for NumSamples = SampleSizes
         for NumFeatures = FeatureSizes
+            
+            fprintf('Generating Data with NumCluster=%g, NumSamples=%g, and NumFeatures=%g\n', NumClusters, NumSamples, NumFeatures);
             AvgClusterDistance = NumFeatures * 1000;
             
             clustermeans = GenerateMeans(NumClusters, NumFeatures, AvgClusterDistance, AvgClusterDistance, 10000);
@@ -20,7 +22,7 @@ for NumClusters = ClusterSizes
             end
             
             fname = sprintf('Data_%gclusters_%gsamples_%gfeatures.mat', NumClusters, NumSamples, NumFeatures);
-            save(fname,'data', 'clustercov', 'clustermeans', 'NumClusters', 'NumSamples', 'NumFeatures');
+            save(fname,'data', 'clustercov', 'clustermeans', 'NumClusters', 'NumSamples', 'NumFeatures', '-v7.3');
         end
     end
 end
