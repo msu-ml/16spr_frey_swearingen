@@ -52,7 +52,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage[caption=false,font=footnotesize]{subfig}
-
+\usepackage{textcomp}
 
 \begin{document}
 
@@ -211,20 +211,20 @@ Thomas Swearingen\\
 
 K-means is a popular machine learning algorithm for clustering.
 As the amount of data has grown ever larger, the limitation of the classic K-mean algorithm has become more apparent.
-Specifically, the K-means algorithm is linear in data set size---the number of distance calculations is nki, where n is the number of data points, k is the number of desired clusters, and i is the number of iterations.
+Specifically, the K-means algorithm is linear in data set size---the number of distance calculations is $O(nki)$, where $n$ is the number of data points, $k$ is the number of desired clusters, and $i$ is the number of iterations.
 This linearity reduces the usability of the algorithm with large datasets.
-However, Ding \textit{et al.} propose Yinyang K-means \cite{Ding2015} which seeks to solve this problem.
+However, Ding \textit{et al.} propose Yinyang K-means~\cite{Ding2015} which seeks to solve this problem.
 The authors assert Yinyang K-means can be used in place of classical K-means with no extra conditions or requirements while simultaneously achieving an order of magnitude higher performance.
 We intend to explore the theoretical properties of this proposed method and verify the authors' claim of a significant speed up.
 
 \section{Introduction}
 
 K-means is a venerable clustering algorithm which has gained the trust of researchers through years of use.
-However, when the dimensionality, data set size, or number of desired clusters is large, k-means becomes prohibitively expensive.
-Attempts at increasing the performance of k-means mainly fall into two categories: working on improving the core algorithm or improving the performance through some other means (e.g. K-means++ \cite{Arthur2007}).
+However, when the dimensionality, data set size, or number of desired clusters is large, K-means becomes prohibitively expensive.
+Attempts at increasing the performance of K-means mainly fall into two categories: working on improving the core algorithm or improving the performance through some other means (\textit{e.g.} K-means++ \cite{Arthur2007}).
 This work focuses on the former method, which includes approximation and optimization.
-Within this realm, work has been done previously on structural or incremental optimization by \cite{Pelleg1999}, \cite{Elkan2003}, and \cite{Drake2012} and on approximation by several groups (\cite{Guha1998}, \cite{Czumaj2007}), \cite{Philbin2007}, \cite{Sculley2010}, \cite{Wang2015}).
-While this previous work has been of high quality, none of the innovations have gotten much traction or widespread use.
+Within this realm, work has been done previously on structural or incremental optimization \cite{Pelleg1999, Elkan2003, Drake2012} and on approximation \cite{Guha1998, Czumaj2007, Philbin2007, Sculley2010, Wang2015}.
+While this previous work has been of high quality, none of the innovations have gotten much traction or widespread use \cite{Ding2015}.
 
 In the first category, \textit{Elkan} \cite{Elkan2003} uses two lemmas to find a lower bound using the triangle inequality:
 \begin{flushleft}
@@ -236,10 +236,10 @@ In the first category, \textit{Elkan} \cite{Elkan2003} uses two lemmas to find a
 The first lemma is used to avoid calculating distances to centers in cases where $\frac{1}{2}d(c,c')\geq d(x,c)$.
 The second lemma lets the algorithm use a lower bound $l\leq d(x,b)$, where $x$ is any data point and $b$ is any center.
 As long as center $b$ does not move too much in an iteration, then $l$ can be used as $d(x,b)$ without actually calculating the distance.
-Empirically, Elkan's algorithm speeds up k-means by factors from 1.50 to 351.
-The algorithm performs better with higher $k$ and lower dimensionality - of the four public datasets used in evaluation, performance increased as k varied from 3 to 20 to 100 and dimensionality decreased from 784 to 2.
+Empirically, Elkan's algorithm speeds up K-means by factors of 1.50 to 351.
+The algorithm performs better with higher $k$ and lower dimensionality - of the four public datasets used in evaluation, performance increased as $k$ varied from 3 to 20 to 100 and dimensionality decreased from 784 to 2.
 
-In one work from the approximation tack, Sculley \cite{Sculley2010} uses mini batches to greatly improve on the accuracy of the online stochastic gradient descent method demonstrated by Battou and Bengio in \cite{Bottou1995}.
+In one work from the approximation tack, \textit{Sculley} \cite{Sculley2010} uses mini batches to greatly improve on the accuracy of the online stochastic gradient descent method demonstrated by \textit{Battou and Bengio}~\cite{Bottou1995}.
 In this approach, Sculley first finds the closest centers to each data point in the mini batch.
 An array $v$ tracks the number of data points associated with a given center $c$.
 The main loop iterates over the data points:
@@ -252,15 +252,15 @@ The main loop iterates over the data points:
 \end{enumerate}
 \end{flushleft}
 
-Sculley's experiments showed that this mini-batch gradient descent with batch size 1000 converged orders of magnitude faster than classic k-means while achieving much better accuracy than Bottou and Bengio's method.
+Sculley's experiments showed that this mini-batch gradient descent with batch size 1,000 converged orders of magnitude faster than classic K-means while achieving much better accuracy than Bottou and Bengio's method.
 (Here, the classic algorithm is treated as the ground truth for calculating accuracy.)
 
 In \textit{Drake and Hamerly} \cite{Drake2012}, the authors keep $b$ lower bounds where $b<k$, $k$ being the number of bounds kept in \textit{Elkan} \cite{Elkan2003}.
 These bounds are the distances to the $b$ nearest neighbors of the point in question, and are kept by tracking a point's center and the $1\leq z\leq b$ closest centers.
-Of particular note, \textit{Drake and Hamerly} tune $b$ adaptively as follows: start at $b=\frac{k}{4}$; after each iteration, $b$ becomes the number of useful bounds while staying at least $\frac{k}{8}$.
-Tests that Drake and Hamerly performed on their algorithm show that for a medium range of dimensions (~25-125), it out-performs algorithms by Elkan \cite{Elkan2003}, Hamerly \cite{Hamerly2010}, and the traditional k-means.
+Of particular note, Drake and Hamerly tune $b$ adaptively as follows: start at $b=\frac{k}{4}$; after each iteration, $b$ becomes the number of useful bounds while staying at least $\frac{k}{8}$.
+Tests that Drake and Hamerly performed on their algorithm show that for a medium range of dimensions ($\sim$25-125), it out-performs algorithms by Elkan \cite{Elkan2003}, Hamerly \cite{Hamerly2010}, and the traditional K-means.
 
-It has been hypothesized that in order to gain popularity in practical use, a replacement for k-means must meet three requirements: equivalent clustering to traditional k-means, consistent and significant performance gains, and simple to use.
+It has been hypothesized that in order to gain popularity in practical use, a replacement for K-means must meet three requirements: equivalent clustering to traditional K-means, consistent and significant performance gains, and simple to use \cite{Ding2015}.
 
 \begin{figure*}[!tb]
     \centering
@@ -269,49 +269,21 @@ It has been hypothesized that in order to gain popularity in practical use, a re
     \label{fig:timeline}
 \end{figure*}
 
+\subsection{Yinyang K-means}
 The proposed work aims to satisfy those three requirements.
 It utilizes the triangle inequality in a novel way to keep track of two bounds: the upper bound on the distance from a given point to its assigned cluster center and the lower bound on the distance from the point to any other center.
-These two bounds act to reduce the number of distance calculations that need to be performed during the assignment step of k-means.
+These two bounds act to reduce the number of distance calculations that need to be performed during the assignment step of K-means.
 This is achieved through two kinds of filtering: group/global filtering and local filtering.
 Global filtering works to determine if a point needs to be assigned to a different cluster based on the movement of the cluster centers.
 If centers change by a large amount, then it is more likely that points need their cluster assignment checked.
-Group filtering generalizes the global filtering by initially grouping the clusters into groups before the first iteration of k-means and applying the global filter to those groups.
+Group filtering generalizes the global filtering by initially grouping the clusters into groups before the first iteration of K-means and applying the global filter to those groups.
 Local filtering is performed on any groups of cluster centers that make it through the group filter.
 Centers that get filtered by the local filter do not have their distances to the data points calculated.
 
-Additionally, a method to optimize the second step of k-means, the center update step, is proposed.
+Additionally, a method to optimize the second step of K-means, the center update step, is proposed.
 The new method updates the cluster centers by modifying them rather than calculating the average across all points contained in that cluster.
 
-\section{Working Plan}
 
-The theory thrust of the project consists of 3 requirements and a 4th optional task:
-
-\begin{itemize}
-\item Show all details of the proof of correctness
-\item Implement the algorithm
-\item Test algorithm on synthetic dataset to verify theoretical properties
-\item \textit{Test algorithm on a real-world dataset}
-\end{itemize}
-
-Figure \ref{fig:timeline} shows the overview of our project timeline.
-We have completed the introduction and problem description that will be included in the intermediate project report and the final project report.
-This document includes a near-final draft of those sections.
-We will continue to refine the introduction and problem description as needed.
-
-We have completed the code that generates our synthetic data
-
-The next step is proving the theoretical properties of Yin-yang K-means.
-This includes the Global-Filtering Condition and the Local-Filtering Condition.
-The Global-Filtering Condition asserts that cluster assignment of a point is only necessary if the cluster centroid changes drastically.
-The Local-Filtering Condition allows skipping distance calculations between a point and a centroid if that point is with some set distance to another centroid.
-We have made some progress on verifying these theoretical properties, but it is taking somewhat longer than expected.
-We will also investigate the authors' claim that Yinyang K-means achieves the same performance as classic K-means with an order of magnitude performance increase.
-
-The last part of the project involves implementing the algorithm on a computer.
-Once it is implemented and verified to be correct, we can then test the algorithm on the synthetic data we generated earlier.
-The synthetic data will be created in a such a way that the theoretical properties of the algorithm will be tested.
-This will tell us that these properties actually hold in practice.
-If there is time, we also plan to try the algorithm on a real-world dataset which will hopefully see the same benefits as the synthetic data.
 
 \section{Data}
 
@@ -331,44 +303,42 @@ If there is time, we also plan to try the algorithm on a real-world dataset whic
 \label{tab:dataparams}
 \end{table*}
 
-The main claim of the authors of the is the ability to apply the K-means clustering algorithm to data which is large.
+The main claim of the authors is the ability to apply the K-means clustering algorithm to data which is large.
 Thus, our synthetic dataset should attempt to verify this claim by including large amounts of data.
 It will also be interesting to document how the performance changes as the data size grows.
 The authors also claim that clustering results of Yinyang K-means is the same as standard K-means.
-So we vary the ``difficulty" of clustering the data by varying the average euclidean distance of the mean of all of the clusters.
+So we vary the ``difficulty" of clustering the data by varying the average Euclidean distance of the mean of all of the clusters.
 
 There are four primary parameters that we vary in our synthetic dataset.
 The first parameter is the number of clusters ($N_C$) where we use 3 different values: 100, 1,000, and 10,000.
 The second parameter is the number of features ($N_F$)  where we use 3 different values: 100, 500, and 1,000.
 The third parameter is the number of samples per cluster ($N_S$) where we use 3 different values: 100, 500, and 1,000.
-The fourth and final parameter is the verage mean euclidean distance parameter ($\mu_\text{euc}$) where we use 3 different values: 100, 500, and 1,000.
+The fourth and final parameter is the average mean Euclidean distance parameter ($\mu_\text{euc}$) where we use 3 different values: 100, 500, and 1,000.
 There are 81 synthetic datasets that we will run both Yinyang K-means and standard K-means on.
-This information is summarized in Table \ref{tab:dataparams}.
+This information is summarized in Table~\ref{tab:dataparams}.
 
 
-We generate the data as multi-variate Gaussians.
+We generate the data as multi-variate Gaussian distributions.
 We first generate an $N_C$-sized set of means.
 An overview of this process is shown in Figure \ref{fig:meangeneration}.
-We want to vary the average distance between clusters so we introduce an average mean euclidean distance parameter ($\mu_\text{euc}$).
+We want to vary the average distance between clusters so we introduce an average mean Euclidean distance parameter ($\mu_\text{euc}$).
 We then use the \texttt{randn} MATLAB function to generate a set of potential means of size $10*N_C$ each with $N_F$ features.
-We then sample from the set $N_C$ means and calculate their average euclidean distance and compare it to $\mu_\text{euc}$.
+We then sample from the set $N_C$ means and calculate their average Euclidean distance and compare it to $\mu_\text{euc}$.
 If it is within the tolerance ($\delta$), we use this as the set of $N_C$ means for a single run.
 
 \begin{figure}[!tb]
     \centering
     \includegraphics[width=\linewidth]{figures/MeanGeneration.eps}
-    \caption{Overview of the mean generation step. A $N_C$-sized set of means is sampled from the $10 * N_C$-sized set of potential means. If the sample has an average euclidean distance within the tolerance it is selected. If not, a new sample is selected.}
+    \caption{Overview of the mean generation step. A $N_C$-sized set of means is sampled from the $10 * N_C$-sized set of potential means. If the sample has an average Euclidean distance within the tolerance it is selected. If not, a new sample is selected.}
     \label{fig:meangeneration}
 \end{figure}
 
 We then generate a random matrix $B$ and then generate a random positive semi-definite matrix $C = B^\text{T} B$ that we use as the covariance.
 We do this for each mean in the run.
-Using the mean and the covariance we use the \texttt{mvnrnd} MATLAB to generate the data with $N_S$ samples.
+We use this mean and the covariance as arguments for the \texttt{mvnrnd} MATLAB function to generate the data with $N_S$ samples.
 
 
-
-
-To demonstrate the data generation described above, we ran the above procedure with $N_C = 5$, $N_F = 2$, and $N_S = 100$.
+To demonstrate the data generation described above, we used the following parameters: $N_C = 5$, $N_F = 2$, and $N_S = 100$.
 Since the data is two dimensional, we can visualize it.
 Two examples are shown in Figure \ref{fig:dataexamples}.
 
@@ -381,6 +351,35 @@ Two examples are shown in Figure \ref{fig:dataexamples}.
 \label{fig:dataexamples}
 \end{figure}
 
+\section{Working Plan}
+
+The theory thrust of the project consists of 3 requirements and a 4th optional task:
+
+\begin{itemize}
+\item Show all details of the proof of correctness
+\item Implement the algorithm
+\item Test algorithm on synthetic dataset to verify theoretical properties
+\item \textit{Test algorithm on a real-world dataset}
+\end{itemize}
+
+Figure \ref{fig:timeline} shows the overview of our project timeline.
+We have completed the introduction and problem description that will be included in the intermediate project report and the final project report.
+This document includes a near-final draft of those sections.
+We will continue to refine the introduction and problem description as needed.
+We have completed the code that generates our synthetic data
+
+The next step is proving the theoretical properties of Yin-yang K-means.
+This includes the Global-Filtering Condition and the Local-Filtering Condition.
+The Global-Filtering Condition asserts that cluster assignment of a point is only necessary if the cluster centroid changes drastically.
+The Local-Filtering Condition allows skipping distance calculations between a point and a centroid if that point is with some set distance to another centroid.
+We have made some progress on verifying these theoretical properties, but it is taking somewhat longer than expected.
+We will also investigate the authors' claim that Yinyang K-means achieves the same performance as classic K-means with an order of magnitude performance increase.
+
+The last part of the project involves implementing the algorithm on a computer.
+Once it is implemented and verified to be correct, we can then test the algorithm on the synthetic data we generated earlier.
+The synthetic data has been created in a such a way that the theoretical properties of the algorithm will be tested.
+This will tell us that these properties actually hold in practice.
+If there is time, we also plan to try the algorithm on a real-world dataset which will hopefully see the same benefits as the synthetic data.
 
 % The following two commands are all you need in the
 % initial runs of your .tex file to
