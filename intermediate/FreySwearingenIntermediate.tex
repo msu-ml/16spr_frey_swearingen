@@ -51,6 +51,7 @@
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage[caption=false,font=footnotesize]{subfig}
 
 
 \begin{document}
@@ -238,10 +239,26 @@ As long as center $b$ does not move too much in an iteration, then $l$ can be us
 Empirically, Elkan's algorithm speeds up k-means by factors from 1.50 to 351.
 The algorithm performs better with higher $k$ and lower dimensionality - of the four public datasets used in evaluation, performance increased as k varied from 3 to 20 to 100 and dimensionality decreased from 784 to 2.
 
+In one work from the approximation tack, Sculley \cite{Sculley2010} uses mini batches to greatly improve on the accuracy of the online stochastic gradient descent method demonstrated by Battou and Bengio in \cite{Bottou1995}.
+In this approach, Sculley first finds the closest centers to each data point in the mini batch.
+An array $v$ tracks the number of data points associated with a given center $c$.
+The main loop iterates over the data points:
+\begin{flushleft}
+\begin{enumerate}
+\item Retrieve the center associated with this point.
+\item Update $\emph{v}[c]$.
+\item Calculate the center's learning rate as $\eta=\frac{1}{\emph{v}[c]}$.
+\item Perform the gradient step for center $c$.
+\end{enumerate}
+\end{flushleft}
+
+Sculley's experiments showed that this mini-batch gradient descent with batch size 1000 converged orders of magnitude faster than classic k-means while achieving much better accuracy than Bottou and Bengio's method.
+(Here, the classic algorithm is treated as the ground truth for calculating accuracy.)
+
 In \textit{Drake and Hamerly} \cite{Drake2012}, the authors keep $b$ lower bounds where $b<k$, $k$ being the number of bounds kept in \textit{Elkan} \cite{Elkan2003}.
 These bounds are the distances to the $b$ nearest neighbors of the point in question, and are kept by tracking a point's center and the $1\leq z\leq b$ closest centers.
 Of particular note, \textit{Drake and Hamerly} tune $b$ adaptively as follows: start at $b=\frac{k}{4}$; after each iteration, $b$ becomes the number of useful bounds while staying at least $\frac{k}{8}$.
-Tests that Drake and Hamerly performed on their algorithm show that for a medium range of dimensions (~25-125), it out-performs algorithms by Elkan[\cite{Elkan2003}, Hamerly \cite{Hamerly2010}, and the traditional k-means.
+Tests that Drake and Hamerly performed on their algorithm show that for a medium range of dimensions (~25-125), it out-performs algorithms by Elkan \cite{Elkan2003}, Hamerly \cite{Hamerly2010}, and the traditional k-means.
 
 It has been hypothesized that in order to gain popularity in practical use, a replacement for k-means must meet three requirements: equivalent clustering to traditional k-means, consistent and significant performance gains, and simple to use.
 
@@ -260,7 +277,7 @@ The new method updates the cluster centers by modifying them rather than calcula
 
 \section{Preliminary Plan}
 
-The theory thrust of the project consist of 3 requirements and a 4th optional task:
+The theory thrust of the project consists of 3 requirements and a 4th optional task:
 
 \begin{itemize}
 \item Show all details of the proof of correctness
@@ -270,25 +287,24 @@ The theory thrust of the project consist of 3 requirements and a 4th optional ta
 \end{itemize}
 
 Figure \ref{fig:timeline} shows the overview of our project timeline.
-We first plan to write up the introduction and problem description that will be included in the intermediate project report and the final project report.
-This document includes the first draft of those sections.
-We will expand on them over time to give a thorough description of the work and place it in the context of other related works.
+We have completed the introduction and problem description that will be included in the intermediate project report and the final project report.
+This document includes the a near-final draft of those sections.
+We will continue to refine the introduction and problem description as needed.
 
-\begin{figure*}
+\begin{figure*}[!htbp]
     \centering
     \includegraphics[width=\textwidth]{figures/timeline.eps}
     \caption{Project timeline showing key steps in the project. A solid color border indicates required step while a dotted line border indicates an optional step that will only be completed if there is time.}
     \label{fig:timeline}
 \end{figure*}
 
-Once we have a thorough understanding of the problem and the algorithm, we can generate data which will test the algorithm.
-The synthetic data should push the limits of the algorithm.
-Since the authors intend for Yinyang K-means to extend classic K-means to better cope with large datasets, then the synthetic data should be quite large as well.
+We have completed the code that generates our synthetic data
 
 The next step is proving the theoretical properties of Yin-yang K-means.
 This includes the Global-Filtering Condition and the Local-Filtering Condition.
 The Global-Filtering Condition asserts that cluster assignment of a point is only necessary if the cluster centroid changes drastically.
 The Local-Filtering Condition allows skipping distance calculations between a point and a centroid if that point is with some set distance to another centroid.
+We have made some progress on verifying these theoretical properties, but it is taking somewhat longer than expected.
 We will also investigate the authors' claim that Yinyang K-means achieves the same performance as classic K-means with an order of magnitude performance increase.
 
 The last part of the project involves implementing the algorithm on a computer.
@@ -297,9 +313,61 @@ The synthetic data will be created in a such a way that the theoretical properti
 This will tell us that these properties actually hold in practice.
 If there is time, we also plan to try the algorithm on a real-world dataset which will hopefully see the same benefits as the synthetic data.
 
+\section{Data}
+
+The main claim of the authors of the is the ability to apply the K-means clustering algorithm to data which is large.
+Thus, our synthetic dataset should attempt to verify this claim by including large amounts of data.
+It will also be interesting to see how the performance changes as the data size grows.
+
+There are three primary parameters that we vary in our synthetic dataset.
+The first parameter is the number of clusters ($N_C$) where we use 5 different values: 100, 1,000, 10,000, 100,000, and 1,000,000.
+The second parameter is the number of features ($N_F$)  where we use 3 different values: 100, 1,000, and 10,000.
+The third and final parameter is the number of samples per cluster ($N_S$) where we use 4 different values: 100, 1,000, 10,000, and 100,000.
+This information is summarized in Table \ref{tab:dataparams}.
+
+\begin{table*}[!htbp]
+\caption{Data Parameters}
+\begin{center}
+\begin{tabular}{|c||c||c|}
+\hline
+\textbf{Number of Clusters} & \textbf{Number of Features} & \textbf{Number of Samples Per Cluster} \\
+\hline
+100 & 100 & 100 \\
+1,000 & 1,000 & 1,000 \\
+10,000 & 10,000 & 10,000 \\
+100,000 & & 100,000 \\
+1,000,000 & & \\
+\hline
+\end{tabular}
+\end{center}
+\label{tab:dataparams}
+\end{table*}
 
 
-%
+We generate the data as multi-variate Gaussians.
+We first generate a set of $N_C$ means.
+We don't want the clustering to be too simple so we introduce an average mean euclidean distance parameter ($\mu_\text{euc}$).
+We then use the \texttt{randn} MATLAB function to generate a set of potential means of size $10*N_C$ each with $N_F$ features.
+We then sample from the set $N_C$ means and calculate their average euclidean distance and compare it to $\mu_\text{euc}$.
+If it is within the tolerance ($\delta$), we use this as the set of $N_C$ means for a single run.
+
+We then generate a random matrix $B$ and then generate a random positive semi-definite matrix $C = B^\text{T} B$ that we use as the covariance.
+We do this for each mean in the run.
+Using the mean and the covariance we use the \texttt{mvnrnd} MATLAB to generate the data with $N_S$ samples.
+To demonstrate the data we ran the above procedure with $N_C = 5$, $N_F = 2$, and $N_S = 100$.
+Since the data is two dimensional, we can visualize it.
+Two examples are shown in Figure \ref{fig:dataexamples}.
+
+\begin{figure}[!htbp]
+\centering
+\subfloat[Example Data]{\includegraphics[width = 0.5\linewidth]{figures/RandDataViz.eps}}
+~
+\subfloat[Example Data]{\includegraphics[width = 0.5\linewidth]{figures/RandDataViz2.eps}}
+\caption{Examples of syntethic data generation. Each cluster is represented with different colors.}
+\label{fig:dataexamples}
+\end{figure}
+
+
 % The following two commands are all you need in the
 % initial runs of your .tex file to
 % produce the bibliography for the citations in your paper.
