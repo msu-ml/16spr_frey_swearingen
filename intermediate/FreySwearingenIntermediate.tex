@@ -318,15 +318,13 @@ If there is time, we also plan to try the algorithm on a real-world dataset whic
 \begin{table*}[!tb]
 \caption{Data Parameters}
 \begin{center}
-\begin{tabular}{|c||c||c|}
+\begin{tabular}{|c||c||c||c|}
 \hline
-\textbf{Number of Clusters} & \textbf{Number of Features} & \textbf{Number of Samples Per Cluster} \\
+\textbf{Num. of Clusters} & \textbf{Num. of Features} & \textbf{Num. of Samples Per Cluster} & \textbf{Avg. Euclidean Distance of Means} \\
 \hline
-100 & 100 & 100 \\
-1,000 & 1,000 & 1,000 \\
-10,000 & 10,000 & 10,000 \\
-100,000 & & 100,000 \\
-1,000,000 & & \\
+100 & 100 & 100 & 100 \\
+1,000 & 500 & 500 & 500 \\
+10,000 & 1,000 & 1,000 & 1,000\\
 \hline
 \end{tabular}
 \end{center}
@@ -338,6 +336,14 @@ Thus, our synthetic dataset should attempt to verify this claim by including lar
 It will also be interesting to document how the performance changes as the data size grows.
 The authors also claim that clustering results of Yinyang K-means is the same as standard K-means.
 So we vary the ``difficulty" of clustering the data by varying the average euclidean distance of the mean of all of the clusters.
+
+There are four primary parameters that we vary in our synthetic dataset.
+The first parameter is the number of clusters ($N_C$) where we use 3 different values: 100, 1,000, and 10,000.
+The second parameter is the number of features ($N_F$)  where we use 3 different values: 100, 500, and 1,000.
+The third parameter is the number of samples per cluster ($N_S$) where we use 3 different values: 100, 500, and 1,000.
+The fourth and final parameter is the verage mean euclidean distance parameter ($\mu_\text{euc}$) where we use 3 different values: 100, 500, and 1,000.
+There are 81 synthetic datasets that we will run both Yinyang K-means and standard K-means on.
+This information is summarized in Table \ref{tab:dataparams}.
 
 
 We generate the data as multi-variate Gaussians.
@@ -360,11 +366,7 @@ We do this for each mean in the run.
 Using the mean and the covariance we use the \texttt{mvnrnd} MATLAB to generate the data with $N_S$ samples.
 
 
-There are three primary parameters that we vary in our synthetic dataset.
-The first parameter is the number of clusters ($N_C$) where we use 5 different values: 100, 1,000, 10,000, 100,000, and 1,000,000.
-The second parameter is the number of features ($N_F$)  where we use 3 different values: 100, 1,000, and 10,000.
-The third and final parameter is the number of samples per cluster ($N_S$) where we use 4 different values: 100, 1,000, 10,000, and 100,000.
-This information is summarized in Table \ref{tab:dataparams}.
+
 
 To demonstrate the data generation described above, we ran the above procedure with $N_C = 5$, $N_F = 2$, and $N_S = 100$.
 Since the data is two dimensional, we can visualize it.
@@ -372,9 +374,9 @@ Two examples are shown in Figure \ref{fig:dataexamples}.
 
 \begin{figure}[!tb]
 \centering
-\subfloat[Example Data]{\includegraphics[width = 0.5\linewidth]{figures/RandDataViz.eps}}
+\subfloat[Example Data 1]{\includegraphics[width = 0.5\linewidth]{figures/RandDataViz.eps}}
 ~
-\subfloat[Example Data]{\includegraphics[width = 0.5\linewidth]{figures/RandDataViz2.eps}}
+\subfloat[Example Data 2]{\includegraphics[width = 0.5\linewidth]{figures/RandDataViz2.eps}}
 \caption{Examples of syntethic data generation. Each cluster is represented with different colors.}
 \label{fig:dataexamples}
 \end{figure}
