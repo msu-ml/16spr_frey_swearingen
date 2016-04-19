@@ -4,12 +4,12 @@ clear
 % Suppress kmeans' 'failed to converge' warning
 warning('off', 'stats:kmeans:FailedToConverge');
 
-%load('all_data.mat')
-load('visualization.mat')
-k = 5;
+load('all_data.mat')
+%load('visualization.mat')
+k = 10;
 epsilon = 0.01;
-%t = k / 10;
-t = 2;
+t = k / 10;
+%t = 2;
 % Array used to track cluster membership for set operations
 point_labels = 1:size(all_data, 1);
 
@@ -55,7 +55,6 @@ for i = 1:k
     [new_clusters{i, 1}, ~] = find(new_assignments == i);
 end
 
-numiter = 1;
 while max(max(abs(new_locations - old_locations), [], 2)) > epsilon
     % Step 3.1 part 1: update centers
     center_drifts = zeros(k, 1);
@@ -88,8 +87,4 @@ while max(max(abs(new_locations - old_locations), [], 2)) > epsilon
     lb = lb - group_drifts(group_idx(new_assignments));
     
     temp_global_lb = min(lb);
-    numiter = numiter + 1;
-    if numiter > 1000
-        break
-    end
 end
