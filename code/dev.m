@@ -1,10 +1,11 @@
 % script to develop yykmeans function
-%clear
+clear
 
 % Suppress kmeans' 'failed to converge' warning
 warning('off', 'stats:kmeans:FailedToConverge');
 
 %load('all_data.mat')
+load('visualization.mat')
 k = 5;
 epsilon = 0.01;
 %t = k / 10;
@@ -23,7 +24,7 @@ old_centers = all_data(1:k, :);
 
 % Step 2 part 1: run one iteration of k-means.
 [old_assignments, old_locations, ~, old_distances] = kmeans(all_data, k,...
-    'MaxIter', 1);
+    'MaxIter', 1, 'Start', all_data(1:k, :));
 
 % Step 2 part 2: run one more so we have new and old assignments and
 % locations.
