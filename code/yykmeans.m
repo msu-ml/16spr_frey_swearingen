@@ -1,4 +1,4 @@
-function [ assignments, numiter ] = yykmeans( data, k, epsilon, maxiter )
+function [ assignments, numiter ] = yykmeans( data, k, maxiter )
 %YYKMEANS implements Yinyang kmeans as described in Y. Ding, Y. Zhao, 
 % X. Shen, M. Musuvathi, and T. Mytkowicz. Yinyang k-means: A drop-in
 % replacement of the classic k-means with consistent speedup.
@@ -12,14 +12,11 @@ n = size(data, 1);
 % Array used to track cluster membership for set operations
 point_labels = 1:n;
 
-% Get k random initial centers
-%old_centers = datasample(data, k, 'Replace', false);
-
 % For replication, use first k data points as initial centers
-old_centers = data(1:k, :);
-
+%old_centers = data(1:k, :);
+old_centers = datasample(data, k, 'Replace', false);
 % Step 1: group initial centers into t groups
-[group_idx, group_locations] = kmeans(old_centers, t, 'MaxIter', 5);
+[group_idx, ~] = kmeans(old_centers, t, 'MaxIter', 5);
 
 % Step 2 part 1: run one iteration of k-means.
 [old_assignments, old_locations, ~, old_distances] = kmeans(data, k,...
@@ -27,9 +24,8 @@ old_centers = data(1:k, :);
 
 % Step 2 part 2: run one more so we have new and old assignments and
 % locations.
-[new_assignments, new_locations, ~, local_filter_distances] = kmeans(data, k,...
-    'MaxIter', 1, 'Start', old_locations);
-distances_to_centroids = dist(data, new_locations');
+[new_assignments, new_locations, ~, distances_to_centroids] = kmeans(data, k,...
+    'MaxIter', 1, 'Start', old_locations, 'EmptyAction', 'error');
 
 % Step 2 part 3: calculate initial upper bounds
 ub = min(distances_to_centroids, [], 2);
@@ -62,10 +58,9 @@ for i = 1:k
     [new_clusters{i, 1}, ~] = find(new_assignments == i);
 end
 
-old_assignments = new_assignments;
-numiter = 1;
-while (max(max(abs(new_locations - old_locations), [], 2)) > epsilon) &&...
-        numiter <= maxiter
+numiter = 0;
+while sum(new_assignments == old_assignments) < n && numiter <= maxiter
+    old_assignments = new_assignments;
     % Step 3.1 part 1: update centers
     center_drifts = zeros(k, 1);
     for i = 1:k
@@ -142,6 +137,8 @@ while (max(max(abs(new_locations - old_locations), [], 2)) > epsilon) &&...
             [1:this_centroid-1 this_centroid+1:end]));
         if ~any(points_through_group_filter == i)
             for j = 1:t
+                disp(i)
+                disp(j)
                 if sorted_distances(2) >= lb(i, points_blocked_by_group_filter(i, j)) -...
                         center_drifts(old_assignments(i));
                     centers_through_local_filter(center_num) = idx(2);
@@ -159,12 +156,12 @@ while (max(max(abs(new_locations - old_locations), [], 2)) > epsilon) &&...
     points_through_local_filter(~any(points_through_local_filter, 2), :) = [];
     
     % Find new b(x) for any point that failed the local filter check above
-    local_filter_distances = dist(data(points_through_local_filter(:, 1), :),...
+    local_filter_distances = dist(data(points_through_local_filter, :),...
         new_locations(centers_through_local_filter, :)');
     [new_shortest_distances, idx] = min(local_filter_distances, [], 2);
     ub(idx) = new_shortest_distances;
+    new_assignments(points_through_local_filter) = idx;
     
-    old_assignments = new_assignments;
     numiter = numiter + 1;
 end
 assignments = new_assignments;

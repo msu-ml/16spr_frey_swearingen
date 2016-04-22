@@ -1,6 +1,6 @@
 % script to develop yykmeans function
 clear
-
+maxiter = 100;
 % Suppress kmeans' 'failed to converge' warning
 warning('off', 'stats:kmeans:FailedToConverge');
 
@@ -64,10 +64,10 @@ for i = 1:k
     [new_clusters{i, 1}, ~] = find(new_assignments == i);
 end
 
-old_assignments = new_assignments;
 numiter = 1;
-while (max(max(abs(new_locations - old_locations), [], 2)) > epsilon) &&...
+while sum(new_assignments == old_assignments) < n &&...
         numiter <= maxiter
+    old_assignments = new_assignments;
     % Step 3.1 part 1: update centers
     center_drifts = zeros(k, 1);
     for i = 1:k
