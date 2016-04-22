@@ -65,6 +65,7 @@ for i = 1:k
 end
 
 old_assignments = new_assignments;
+numiter = 1;
 while max(max(abs(new_locations - old_locations), [], 2)) > epsilon
     % Step 3.1 part 1: update centers
     center_drifts = zeros(k, 1);
@@ -161,6 +162,9 @@ while max(max(abs(new_locations - old_locations), [], 2)) > epsilon
     % Find new b(x) for any point that failed the local filter check above
     local_filter_distances = dist(all_data(points_through_local_filter(:, 1), :),...
         new_locations(centers_through_local_filter, :)');
-    new_shortest_distances = min(local_filter_distances, [], 2);
-    x = 0;
+    [new_shortest_distances, idx] = min(local_filter_distances, [], 2);
+    ub(idx) = new_shortest_distances;
+    
+    old_assignments = new_assignments;
+    numiter = numiter + 1;
 end
