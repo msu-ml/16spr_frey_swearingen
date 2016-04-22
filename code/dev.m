@@ -102,8 +102,8 @@ while max(max(abs(new_locations - old_locations), [], 2)) > epsilon
     
     % Step 3.2 part 2: find points and groups that need to go to local
     % filtering.
-    blocked_by_group_filter = zeros(n, 2);
-    through_group_filter = zeros(n, 1);
+    points_blocked_by_group_filter = zeros(n, t);
+    points_through_group_filter = zeros(n, 1);
     for i = 1:n
         if temp_global_lb(i) >= ub(i)
             new_assignments(i) = old_assignments(i);
@@ -116,8 +116,9 @@ while max(max(abs(new_locations - old_locations), [], 2)) > epsilon
                 % Still failed check, pass to local filtering
                 for j = 1:t
                     if lb(i, j) < ub(i)
-                        blocked_by_group_filter(i, :) = [i, j];
-                        through_group_filter(i) = i;
+                        points_blocked_by_group_filter(i, j) = j;
+                    else
+                        points_through_group_filter(i) = i;
                     end
                 end
             end
@@ -125,7 +126,37 @@ while max(max(abs(new_locations - old_locations), [], 2)) > epsilon
     end
     
     % Remove zero rows from the arrays generated above
-    blocked_by_group_filter(~any(blocked_by_group_filter, 2), :) = [];
-    through_group_filter(~any(through_group_filter, 2), :) = [];
+    points_blocked_by_group_filter(~any(points_blocked_by_group_filter, 2), :) = [];
+    points_through_group_filter(~any(points_through_group_filter, 2), :) = [];
+    
+    % Step 3.3 part 1: filter remaining candidate centers with the
+    % second-closest center found so far.
+    centers_through_local_filter = zeros(k, 1);
+    center_num = 1;
+    for i = 1:size(points_blocked_by_group_filter, 1)
+        this_centroid = new_assignments(i);
+        % Don't count the point's current assignment when looking for the
+        % second-closest center.
+        [sorted_distances, idx] = sort(distances_to_centroids(i, ...
+            [1:this_centroid-1 this_centroid+1:end]));
+        if ~any(points_through_group_filter == i)
+            for j = 1:t
+                if sorted_distances(2) >= lb(i, points_blocked_by_group_filter(i, j)) -...
+                    center_drifts(old_assignments(i));
+                    centers_through_local_filter(center_num) = idx(2);
+                    center_num = center_num + 1;
+                end
+            end
+        end
+    end
+    
+    % Remove duplicate center indices.
+    centers_through_local_filter = unique(centers_through_local_filter);
+    
+    % Find new b(x) for any x in points
+    new_distances = dist(all_data(points_blocked_by_group_filter, :),...
+        new_locations(centers_through_local_filter, :)');
+%     new_assignments(points_blocked_by_group_filter) = ...
+%         min(new_distances
     x = 0;
 end
