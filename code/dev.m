@@ -29,7 +29,7 @@ old_centers = all_data(1:k, :);
 
 % Step 2 part 2: run one more so we have new and old assignments and
 % locations.
-[new_assignments, new_locations, ~, new_distances] = kmeans(all_data, k,...
+[new_assignments, new_locations, ~, local_filter_distances] = kmeans(all_data, k,...
     'MaxIter', 1, 'Start', old_locations);
 distances_to_centroids = dist(all_data, new_locations');
 
@@ -132,6 +132,7 @@ while max(max(abs(new_locations - old_locations), [], 2)) > epsilon
     % Step 3.3 part 1: filter remaining candidate centers with the
     % second-closest center found so far.
     centers_through_local_filter = zeros(k, 1);
+    points_through_local_filter = zeros(n, 1);
     center_num = 1;
     for i = 1:size(points_blocked_by_group_filter, 1)
         this_centroid = new_assignments(i);
@@ -142,9 +143,10 @@ while max(max(abs(new_locations - old_locations), [], 2)) > epsilon
         if ~any(points_through_group_filter == i)
             for j = 1:t
                 if sorted_distances(2) >= lb(i, points_blocked_by_group_filter(i, j)) -...
-                    center_drifts(old_assignments(i));
+                        center_drifts(old_assignments(i));
                     centers_through_local_filter(center_num) = idx(2);
                     center_num = center_num + 1;
+                    points_through_local_filter(i) = i;
                 end
             end
         end
@@ -153,10 +155,12 @@ while max(max(abs(new_locations - old_locations), [], 2)) > epsilon
     % Remove duplicate center indices.
     centers_through_local_filter = unique(centers_through_local_filter);
     
-    % Find new b(x) for any x in points
-    new_distances = dist(all_data(points_blocked_by_group_filter, :),...
+    % Remove zeros from points_through_local_filter
+    points_through_local_filter(~any(points_through_local_filter, 2), :) = [];
+    
+    % Find new b(x) for any point that failed the local filter check above
+    local_filter_distances = dist(all_data(points_through_local_filter(:, 1), :),...
         new_locations(centers_through_local_filter, :)');
-%     new_assignments(points_blocked_by_group_filter) = ...
-%         min(new_distances
+    new_shortest_distances = min(local_filter_distances, [], 2);
     x = 0;
 end
