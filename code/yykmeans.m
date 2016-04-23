@@ -9,17 +9,16 @@ warning('off', 'stats:kmeans:FailedToConverge');
 %t = k / 10;
 t = 2;
 n = size(data, 1);
-% Array used to track cluster membership for set operations
-point_labels = 1:n;
 
 % For replication, use first k data points as initial centers
-%old_centers = data(1:k, :);
-old_centers = datasample(data, k, 'Replace', false);
+old_centers = data(1:k, :);
+%old_centers = datasample(data, k, 'Replace', false);
+
 % Step 1: group initial centers into t groups
 [group_idx, ~] = kmeans(old_centers, t, 'MaxIter', 5);
 
 % Step 2 part 1: run one iteration of k-means.
-[old_assignments, old_locations, ~, old_distances] = kmeans(data, k,...
+[old_assignments, old_locations] = kmeans(data, k,...
     'MaxIter', 1, 'Start', old_centers);
 
 % Step 2 part 2: run one more so we have new and old assignments and
