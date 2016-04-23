@@ -1,4 +1,4 @@
-function [ assignments, numiter ] = yykmeans( data, k, t, maxiter )
+function [ new_assignments, numiter, timer ] = yykmeans( data, k, t, maxiter )
 %YYKMEANS implements Yinyang kmeans as described in Y. Ding, Y. Zhao, 
 % X. Shen, M. Musuvathi, and T. Mytkowicz. Yinyang k-means: A drop-in
 % replacement of the classic k-means with consistent speedup.
@@ -58,8 +58,10 @@ for i = 1:k
     [new_clusters{i, 1}, ~] = find(new_assignments == i);
 end
 
+timer = [];
 numiter = 0;
 while sum(new_assignments == old_assignments) < n && numiter <= maxiter
+    tic
     old_assignments = new_assignments;
     % Step 3.1 part 1: update centers
     center_drifts = zeros(k, 1);
@@ -158,15 +160,17 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     points_through_local_filter(~any(points_through_local_filter, 2), :) = [];
     
     % Find new b(x) for any point that failed the local filter check above
-    local_filter_distances = dist(data(points_through_local_filter, :),...
-        new_locations(centers_through_local_filter, :)');
-    [new_shortest_distances, idx] = min(local_filter_distances, [], 2);
-    ub(points_through_local_filter) = new_shortest_distances;
-    new_assignments(points_through_local_filter) = idx;
+    if any(points_through_local_filter)
+        local_filter_distances = dist(data(points_through_local_filter, :),...
+            new_locations(centers_through_local_filter, :)');
+        [new_shortest_distances, idx] = min(local_filter_distances, [], 2);
+        ub(points_through_local_filter) = new_shortest_distances;
+        new_assignments(points_through_local_filter) = idx;
+    end
 
     % Update cluster memberships
     for i = 1:k
-    [old_clusters{i, 1}, ~] = find(old_assignments == i);
+        [old_clusters{i, 1}, ~] = find(old_assignments == i);
     end
 
     for i = 1:k
@@ -175,6 +179,6 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     
     old_locations = new_locations;
     numiter = numiter + 1;
+    timer = [timer; toc];
 end
-assignments = new_assignments;
 end
