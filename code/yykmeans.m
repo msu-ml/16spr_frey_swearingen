@@ -27,7 +27,10 @@ old_centers = data(1:k, :);
     'MaxIter', 1, 'Start', old_locations, 'EmptyAction', 'error');
 
 % Step 2 part 3: calculate initial upper bounds
-ub = min(distances_to_centroids, [], 2);
+ub = zeros(n, 1);
+for i = 1:n
+    ub(i) = distances_to_centroids(i, new_assignments(i));
+end
 
 % Step 2 part 4: find lower bounds for all points.
 lb = zeros(n, t);
@@ -41,7 +44,7 @@ for i = 1:n
             lb(i, j) = min(distances_to_centroids(i, [1:this_cluster-1 ...
                 this_cluster+1:end]));
         else
-            lb(i, j) = ub(i);
+            lb(i, j) = min(distances_to_centroids(i, :));
         end
     end
 end
