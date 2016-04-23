@@ -67,11 +67,11 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     center_drifts = zeros(k, 1);
     for i = 1:k
         % find OV, the intersection between new and old clusters; V - OV,
-        % the points only in the old cluster, and V' - OV, the points only
+        % the points only in the old cluster; and V' - OV, the points only
         % in the new cluster
         OV = intersect(old_clusters{i}, new_clusters{i});
         old_only = setdiff(old_clusters{i}, OV);
-        new_only = setdiff(OV, old_clusters{i});
+        new_only = setdiff(OV, new_clusters{i});
         new_locations(i, :) = (old_locations(i, :) * numel(old_clusters{i})...
             - sum(data(old_only, :)) + sum(data(new_only, :))) / ...
             numel(new_clusters{i});
