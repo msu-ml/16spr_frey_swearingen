@@ -1,4 +1,4 @@
-function [ assignments, numiter ] = yykmeans( data, k, maxiter )
+function [ assignments, numiter ] = yykmeans( data, k, t, maxiter )
 %YYKMEANS implements Yinyang kmeans as described in Y. Ding, Y. Zhao, 
 % X. Shen, M. Musuvathi, and T. Mytkowicz. Yinyang k-means: A drop-in
 % replacement of the classic k-means with consistent speedup.
@@ -6,8 +6,6 @@ function [ assignments, numiter ] = yykmeans( data, k, maxiter )
 % Suppress kmeans' 'failed to converge' warning
 warning('off', 'stats:kmeans:FailedToConverge');
 
-t = k / 10;
-%t = 2;
 n = size(data, 1);
 
 % For replication, use first k data points as initial centers
@@ -24,7 +22,7 @@ old_centers = data(1:k, :);
 % Step 2 part 2: run one more so we have new and old assignments and
 % locations.
 [new_assignments, new_locations, ~, distances_to_centroids] = kmeans(data, k,...
-    'MaxIter', 1, 'Start', old_locations, 'EmptyAction', 'error');
+    'MaxIter', 1, 'Start', old_locations);
 
 % Step 2 part 3: calculate initial upper bounds
 ub = zeros(n, 1);
