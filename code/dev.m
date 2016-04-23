@@ -1,37 +1,28 @@
-% script to develop yykmeans function
-clear
-maxiter = 100;
 % Suppress kmeans' 'failed to converge' warning
 warning('off', 'stats:kmeans:FailedToConverge');
-
-%load('all_data.mat')
 load('visualization.mat')
+data = all_data;
+maxiter = 100;
 k = 5;
-epsilon = 0.01;
 %t = k / 10;
 t = 2;
-n = size(all_data, 1);
-% Array used to track cluster membership for set operations
-point_labels = 1:n;
-
-% Get k random initial centers
-%old_centers = datasample(all_data, k, 'Replace', false);
+n = size(data, 1);
 
 % For replication, use first k data points as initial centers
-old_centers = all_data(1:k, :);
+%old_centers = data(1:k, :);
+old_centers = datasample(data, k, 'Replace', false);
 
 % Step 1: group initial centers into t groups
-[group_idx, group_locations] = kmeans(old_centers, t, 'MaxIter', 5);
+[group_idx, ~] = kmeans(old_centers, t, 'MaxIter', 5);
 
 % Step 2 part 1: run one iteration of k-means.
-[old_assignments, old_locations, ~, old_distances] = kmeans(all_data, k,...
+[old_assignments, old_locations] = kmeans(data, k,...
     'MaxIter', 1, 'Start', old_centers);
 
 % Step 2 part 2: run one more so we have new and old assignments and
 % locations.
-[new_assignments, new_locations, ~, local_filter_distances] = kmeans(all_data, k,...
-    'MaxIter', 1, 'Start', old_locations);
-distances_to_centroids = dist(all_data, new_locations');
+[new_assignments, new_locations, ~, distances_to_centroids] = kmeans(data, k,...
+    'MaxIter', 1, 'Start', old_locations, 'EmptyAction', 'error');
 
 % Step 2 part 3: calculate initial upper bounds
 ub = min(distances_to_centroids, [], 2);
@@ -64,9 +55,8 @@ for i = 1:k
     [new_clusters{i, 1}, ~] = find(new_assignments == i);
 end
 
-numiter = 1;
-while sum(new_assignments == old_assignments) < n &&...
-        numiter <= maxiter
+numiter = 0;
+while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     old_assignments = new_assignments;
     % Step 3.1 part 1: update centers
     center_drifts = zeros(k, 1);
@@ -78,7 +68,7 @@ while sum(new_assignments == old_assignments) < n &&...
         old_only = setdiff(old_clusters{i}, OV);
         new_only = setdiff(OV, old_clusters{i});
         new_locations(i, :) = (old_locations(i, :) * numel(old_clusters{i})...
-            - sum(all_data(old_only, :)) + sum(all_data(new_only, :))) / ...
+            - sum(data(old_only, :)) + sum(data(new_only, :))) / ...
             numel(new_clusters{i});
         center_drifts(i) = norm(new_locations(i) - old_locations(i));
     end
@@ -129,7 +119,7 @@ while sum(new_assignments == old_assignments) < n &&...
     
     % Remove zero rows from the arrays generated above
     points_blocked_by_group_filter(~any(points_blocked_by_group_filter, 2), :) = [];
-    points_through_group_filter(~any(points_through_group_filter, 2), :) = [];
+    %points_through_group_filter(~any(points_through_group_filter, 2), :) = [];
     
     % Step 3.3 part 1: filter remaining candidate centers with the
     % second-closest center found so far.
@@ -137,18 +127,22 @@ while sum(new_assignments == old_assignments) < n &&...
     points_through_local_filter = zeros(n, 1);
     center_num = 1;
     for i = 1:size(points_blocked_by_group_filter, 1)
-        this_centroid = new_assignments(i);
-        % Don't count the point's current assignment when looking for the
-        % second-closest center.
-        [sorted_distances, idx] = sort(distances_to_centroids(i, ...
-            [1:this_centroid-1 this_centroid+1:end]));
-        if ~any(points_through_group_filter == i)
+        % Don't do anything for points that weren't caught by the group
+        % filter
+        if points_through_group_filter(i) == 0
+            this_centroid = new_assignments(i);
+            % Don't count the point's current assignment when looking for the
+            % second-closest center.
+            [sorted_distances, idx] = sort(distances_to_centroids(i, ...
+                [1:this_centroid-1 this_centroid+1:end]));
             for j = 1:t
-                if sorted_distances(2) >= lb(i, points_blocked_by_group_filter(i, j)) -...
-                        center_drifts(old_assignments(i));
-                    centers_through_local_filter(center_num) = idx(2);
-                    center_num = center_num + 1;
-                    points_through_local_filter(i) = i;
+                if points_blocked_by_group_filter(i, j) ~= 0
+                    if sorted_distances(2) >= lb(i, points_blocked_by_group_filter(i, j)) -...
+                            center_drifts(old_assignments(i));
+                        centers_through_local_filter(center_num) = idx(2);
+                        center_num = center_num + 1;
+                        points_through_local_filter(i) = i;
+                    end
                 end
             end
         end
@@ -161,11 +155,11 @@ while sum(new_assignments == old_assignments) < n &&...
     points_through_local_filter(~any(points_through_local_filter, 2), :) = [];
     
     % Find new b(x) for any point that failed the local filter check above
-    local_filter_distances = dist(all_data(points_through_local_filter(:, 1), :),...
+    local_filter_distances = dist(data(points_through_local_filter, :),...
         new_locations(centers_through_local_filter, :)');
     [new_shortest_distances, idx] = min(local_filter_distances, [], 2);
     ub(idx) = new_shortest_distances;
+    new_assignments(points_through_local_filter) = idx;
     
-    old_assignments = new_assignments;
     numiter = numiter + 1;
 end

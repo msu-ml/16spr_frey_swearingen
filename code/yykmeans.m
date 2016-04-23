@@ -11,8 +11,8 @@ t = 2;
 n = size(data, 1);
 
 % For replication, use first k data points as initial centers
-old_centers = data(1:k, :);
-%old_centers = datasample(data, k, 'Replace', false);
+%old_centers = data(1:k, :);
+old_centers = datasample(data, k, 'Replace', false);
 
 % Step 1: group initial centers into t groups
 [group_idx, ~] = kmeans(old_centers, t, 'MaxIter', 5);
@@ -129,20 +129,23 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     points_through_local_filter = zeros(n, 1);
     center_num = 1;
     for i = 1:size(points_blocked_by_group_filter, 1)
-        this_centroid = new_assignments(i);
-        % Don't count the point's current assignment when looking for the
-        % second-closest center.
-        [sorted_distances, idx] = sort(distances_to_centroids(i, ...
-            [1:this_centroid-1 this_centroid+1:end]));
-        if ~any(points_through_group_filter == i)
+        disp(i)
+        % Don't do anything for points that weren't caught by the group
+        % filter
+        if points_through_group_filter(i) == 0
+            this_centroid = new_assignments(i);
+            % Don't count the point's current assignment when looking for the
+            % second-closest center.
+            [sorted_distances, idx] = sort(distances_to_centroids(i, ...
+                [1:this_centroid-1 this_centroid+1:end]));
             for j = 1:t
-                disp(i)
-                disp(j)
-                if sorted_distances(2) >= lb(i, points_blocked_by_group_filter(i, j)) -...
-                        center_drifts(old_assignments(i));
-                    centers_through_local_filter(center_num) = idx(2);
-                    center_num = center_num + 1;
-                    points_through_local_filter(i) = i;
+                if points_blocked_by_group_filter(i, j) ~= 0
+                    if sorted_distances(2) >= lb(i, points_blocked_by_group_filter(i, j)) -...
+                            center_drifts(old_assignments(i));
+                        centers_through_local_filter(center_num) = idx(2);
+                        center_num = center_num + 1;
+                        points_through_local_filter(i) = i;
+                    end
                 end
             end
         end
