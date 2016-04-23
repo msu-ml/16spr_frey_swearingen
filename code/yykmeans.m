@@ -11,8 +11,8 @@ t = 2;
 n = size(data, 1);
 
 % For replication, use first k data points as initial centers
-%old_centers = data(1:k, :);
-old_centers = datasample(data, k, 'Replace', false);
+old_centers = data(1:k, :);
+%old_centers = datasample(data, k, 'Replace', false);
 
 % Step 1: group initial centers into t groups
 [group_idx, ~] = kmeans(old_centers, t, 'MaxIter', 5);
@@ -32,8 +32,8 @@ ub = min(distances_to_centroids, [], 2);
 % Step 2 part 4: find lower bounds for all points.
 lb = zeros(n, t);
 for i = 1:n
-    this_centroid_group = group_idx(new_assignments(i));
     this_cluster = new_assignments(i);
+    this_centroid_group = group_idx(this_cluster);
     % Find the closest center in each group to this point (not counting the
     % center the point is assigned to).
     for j = 1:t
@@ -41,7 +41,7 @@ for i = 1:n
             lb(i, j) = min(distances_to_centroids(i, [1:this_cluster-1 ...
                 this_cluster+1:end]));
         else
-            lb(i, j) = min(distances_to_centroids(i, :));
+            lb(i, j) = ub(i);
         end
     end
 end
@@ -121,7 +121,7 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     
     % Remove zero rows from the arrays generated above
     points_blocked_by_group_filter(~any(points_blocked_by_group_filter, 2), :) = [];
-    points_through_group_filter(~any(points_through_group_filter, 2), :) = [];
+    %points_through_group_filter(~any(points_through_group_filter, 2), :) = [];
     
     % Step 3.3 part 1: filter remaining candidate centers with the
     % second-closest center found so far.
@@ -129,7 +129,6 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     points_through_local_filter = zeros(n, 1);
     center_num = 1;
     for i = 1:size(points_blocked_by_group_filter, 1)
-        disp(i)
         % Don't do anything for points that weren't caught by the group
         % filter
         if points_through_group_filter(i) == 0
