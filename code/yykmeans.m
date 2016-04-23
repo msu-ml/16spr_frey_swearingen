@@ -139,6 +139,7 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
                 [1:this_centroid-1 this_centroid+1:end]));
             for j = 1:t
                 if points_blocked_by_group_filter(i, j) ~= 0
+                    % Use >= vs. not < for local-filtering condition
                     if sorted_distances(2) >= lb(i, points_blocked_by_group_filter(i, j)) -...
                             center_drifts(old_assignments(i));
                         centers_through_local_filter(center_num) = idx(2);
@@ -160,9 +161,17 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     local_filter_distances = dist(data(points_through_local_filter, :),...
         new_locations(centers_through_local_filter, :)');
     [new_shortest_distances, idx] = min(local_filter_distances, [], 2);
-    ub(idx) = new_shortest_distances;
+    ub(points_through_local_filter) = new_shortest_distances;
     new_assignments(points_through_local_filter) = idx;
-    
+
+    % Update cluster memberships
+    for i = 1:k
+    [old_clusters{i, 1}, ~] = find(old_assignments == i);
+    end
+
+    for i = 1:k
+        [new_clusters{i, 1}, ~] = find(new_assignments == i);
+    end
     numiter = numiter + 1;
 end
 assignments = new_assignments;
