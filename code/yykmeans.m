@@ -172,6 +172,8 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     for i = 1:k
         [new_clusters{i, 1}, ~] = find(new_assignments == i);
     end
+    
+    old_locations = new_locations;
     numiter = numiter + 1;
 end
 assignments = new_assignments;
