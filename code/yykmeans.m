@@ -6,8 +6,8 @@ function [ assignments, numiter ] = yykmeans( data, k, maxiter )
 % Suppress kmeans' 'failed to converge' warning
 warning('off', 'stats:kmeans:FailedToConverge');
 
-%t = k / 10;
-t = 2;
+t = k / 10;
+%t = 2;
 n = size(data, 1);
 
 % For replication, use first k data points as initial centers
@@ -78,8 +78,7 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
         center_drifts(i) = norm(new_locations(i) - old_locations(i));
     end
     
-    % Step 3.1 part 2: update group centers and find largest centroid drift
-    % per group
+    % Step 3.1 part 2: find largest centroid drift per group
     group_drifts = zeros(t, 1);
     for i = 1:t
         this_group_members = find(group_idx == i);
