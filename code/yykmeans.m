@@ -70,12 +70,12 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
         % the points only in the old cluster; and V' - OV, the points only
         % in the new cluster
         OV = intersect(old_clusters{i}, new_clusters{i});
-        old_only = setdiff(old_clusters{i}, OV);
-        new_only = setdiff(new_clusters{i}, OV);
+        V = setdiff(old_clusters{i}, OV);
+        V_prime = setdiff(new_clusters{i}, OV);
         new_locations(i, :) = (old_locations(i, :) * numel(old_clusters{i})...
-            - sum(data(old_only, :)) + sum(data(new_only, :))) / ...
+            - sum(data(V, :)) + sum(data(V_prime, :))) / ...
             numel(new_clusters{i});
-        center_drifts(i) = norm(new_locations(i) - old_locations(i));
+        center_drifts(i) = norm(new_locations(i, :) - old_locations(i, :));
     end
     
     % Step 3.1 part 2: find largest centroid drift per group
