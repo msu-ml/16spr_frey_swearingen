@@ -7,10 +7,10 @@ n = size(data, 1);
 if exist('seed')
     old_centers = seed;
 else
-    old_centers = data(1:k, :);
+    %old_centers = data(1:k, :);
+    old_centers = datasample(data, k, 'Replace', false);
 end
 old_assignments = zeros(n, 1);
-%old_centers = datasample(data, k, 'Replace', false);
 timer = [];
 tic
 distances = pdist2(data, old_centers);

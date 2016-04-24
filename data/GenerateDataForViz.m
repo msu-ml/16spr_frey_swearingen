@@ -1,8 +1,8 @@
 close all; clear; clc;
 
-ClusterSizes = [5];
+ClusterSizes = [2];
 FeatureSizes = [2];
-SampleSizes = [100];
+SampleSizes = [10];
 
 for NumClusters = ClusterSizes
     for NumSamples = SampleSizes
