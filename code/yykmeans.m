@@ -13,16 +13,15 @@ old_centers = data(1:k, :);
 %old_centers = datasample(data, k, 'Replace', false);
 
 % Step 1: group initial centers into t groups
-[group_idx, ~] = kmeans(old_centers, t, 'MaxIter', 5);
+[group_idx, ~] = simple_kmeans(old_centers, t, 5);
 
 % Step 2 part 1: run one iteration of k-means.
-[old_assignments, old_locations] = kmeans(data, k,...
-    'MaxIter', 1, 'Start', old_centers);
+[old_assignments, ~, old_locations] = simple_kmeans(data, k, 1);
 
 % Step 2 part 2: run one more so we have new and old assignments and
 % locations.
-[new_assignments, new_locations, ~, distances_to_centroids] = kmeans(data, k,...
-    'MaxIter', 1, 'Start', old_locations);
+[new_assignments, ~, new_locations, distances_to_centroids] =...
+    simple_kmeans(data, k, 1, old_locations);
 
 % Step 2 part 3: calculate initial upper bounds
 ub = zeros(n, 1);
@@ -94,25 +93,25 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
         lb(:, i) = lb(:, i) - group_drifts(i);
     end
     
-    temp_global_lb = min(lb, [], 2);
+    global_lb = min(lb, [], 2);
     
     % Step 3.2 part 2: find points and groups that need to go to local
     % filtering.
-    points_blocked_by_group_filter = zeros(n, t);
+    points_and_groups_to_local_filter = zeros(n, t);
     points_through_group_filter = zeros(n, 1);
     for i = 1:n
-        if temp_global_lb(i) >= ub(i)
+        if global_lb(i) >= ub(i)
             new_assignments(i) = old_assignments(i);
         else
-            % Tighten bounds and re-check
+            % Tighten upper bound and re-check
             ub(i) = distances_to_centroids(i, old_assignments(i));
-            if temp_global_lb(i) >= ub(i)
+            if global_lb(i) >= ub(i)
                 new_assignments(i) = old_assignments(i);
             else
                 % Still failed check, pass to local filtering
                 for j = 1:t
                     if lb(i, j) < ub(i)
-                        points_blocked_by_group_filter(i, j) = j;
+                        points_and_groups_to_local_filter(i, j) = j;
                     else
                         points_through_group_filter(i) = i;
                     end
@@ -122,7 +121,7 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     end
     
     % Remove zero rows from the arrays generated above
-    points_blocked_by_group_filter(~any(points_blocked_by_group_filter, 2), :) = [];
+    points_and_groups_to_local_filter(~any(points_and_groups_to_local_filter, 2), :) = [];
     %points_through_group_filter(~any(points_through_group_filter, 2), :) = [];
     
     % Step 3.3 part 1: filter remaining candidate centers with the
@@ -130,7 +129,7 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     centers_through_local_filter = zeros(k, 1);
     points_through_local_filter = zeros(n, 1);
     center_num = 1;
-    for i = 1:size(points_blocked_by_group_filter, 1)
+    for i = 1:size(points_and_groups_to_local_filter, 1)
         % Don't do anything for points that weren't caught by the group
         % filter
         if points_through_group_filter(i) == 0
@@ -140,9 +139,9 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
             [sorted_distances, idx] = sort(distances_to_centroids(i, ...
                 [1:this_centroid-1 this_centroid+1:end]));
             for j = 1:t
-                if points_blocked_by_group_filter(i, j) ~= 0
+                if points_and_groups_to_local_filter(i, j) ~= 0
                     % Use >= vs. not < for local-filtering condition
-                    if sorted_distances(2) >= lb(i, points_blocked_by_group_filter(i, j)) -...
+                    if sorted_distances(2) >= lb(i, points_and_groups_to_local_filter(i, j)) -...
                             center_drifts(old_assignments(i));
                         centers_through_local_filter(center_num) = idx(2);
                         center_num = center_num + 1;
@@ -161,8 +160,8 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     
     % Find new b(x) for any point that failed the local filter check above
     if any(points_through_local_filter)
-        local_filter_distances = dist(data(points_through_local_filter, :),...
-            new_locations(centers_through_local_filter, :)');
+        local_filter_distances = pdist2(data(points_through_local_filter, :),...
+            new_locations(centers_through_local_filter, :));
         [new_shortest_distances, idx] = min(local_filter_distances, [], 2);
         ub(points_through_local_filter) = new_shortest_distances;
         new_assignments(points_through_local_filter) = idx;
@@ -176,7 +175,15 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     for i = 1:k
         [new_clusters{i, 1}, ~] = find(new_assignments == i);
     end
-    
+    scatter(data(new_assignments == 1, 1), data(new_assignments == 1, 2), 'rd')
+    hold on
+    scatter(data(new_assignments == 2, 1), data(new_assignments == 2, 2), 'y^')
+    scatter(data(new_assignments == 3, 1), data(new_assignments == 3, 2), 'gs')
+    scatter(data(new_assignments == 4, 1), data(new_assignments == 4, 2), 'bo')
+    scatter(data(new_assignments == 5, 1), data(new_assignments == 5, 2), 'kv')
+    scatter(new_locations(:, 1), new_locations(:, 2), 'ms', 'filled')
+    hold off
+    pause(2)
     old_locations = new_locations;
     numiter = numiter + 1;
     timer = [timer; toc];

@@ -1,9 +1,14 @@
-function [ new_assignments, numiter, timer ] = simple_kmeans( data, k, maxiter )
+function [ new_assignments, numiter, new_centers, distances, timer ] =...
+    simple_kmeans( data, k, maxiter, seed )
 %SIMPLE_KMEANS does the classic kmeans with no fancy tricks or
 %  optimizations.
 
 n = size(data, 1);
-old_centers = data(1:k, :);
+if exist('seed')
+    old_centers = seed;
+else
+    old_centers = data(1:k, :);
+end
 old_assignments = zeros(n, 1);
 %old_centers = datasample(data, k, 'Replace', false);
 timer = [];
