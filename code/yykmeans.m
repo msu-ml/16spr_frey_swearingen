@@ -173,15 +173,7 @@ while sum(new_assignments == old_assignments) < n && numiter <= maxiter
     for i = 1:k
         [new_clusters{i, 1}, ~] = find(new_assignments == i);
     end
-    scatter(data(new_assignments == 1, 1), data(new_assignments == 1, 2), 'rd')
-    hold on
-    scatter(data(new_assignments == 2, 1), data(new_assignments == 2, 2), 'y^')
-    scatter(data(new_assignments == 3, 1), data(new_assignments == 3, 2), 'gs')
-    scatter(data(new_assignments == 4, 1), data(new_assignments == 4, 2), 'bo')
-    scatter(data(new_assignments == 5, 1), data(new_assignments == 5, 2), 'kv')
-    scatter(new_locations(:, 1), new_locations(:, 2), 'ms', 'filled')
-    hold off
-    pause(1)
+    
     old_locations = new_locations;
     numiter = numiter + 1;
     timer = [timer; toc];
