@@ -442,7 +442,7 @@ The $\max_{c \in \mathcal{C}} \delta \func{c}$ term will yield the distance of t
 We know that $ub \func{x}$ is the distance between $x$ and its assigned cluster $b \func{x}$.
 The $\delta \func{b \func{x}}$ term will yield the distance $x$'s assigned cluster at iteration $i$ moves between iteration $i$ and iteration $i+1$.
 The left-hand side of Equation~\ref{eq:gfc}, $lb \func{x} - \max_{c \in \mathcal{C}} \delta \func{c}$, indicates how close a cluster other than $b\func{x}$ could possibly be between iteration $i$ and $i+1$.
-The right-hand side of Equation~\ref{eq:gfc}, $ub \func{x} + \delta \func{b \func{x}}$, tell us the distance between $x$ and the location of $\delta \func{b \func{x}}$ at iteration $i+1$.
+The right-hand side of Equation~\ref{eq:gfc}, $ub \func{x} + \delta \func{b \func{x}}$, tell us the maximum possible distance between $x$ and the center of $b \func{x}$ at iteration $i+1$.
 Thus, $b' \func{x} = b\func{x}$ if Equation~\ref{eq:gfc} holds true, otherwise we need to compare the distances between $x$ and all $c \in \mathcal{C}$ to find $b' \func{x}$.
 
 \medskip % add a little space so subsubsubsections are not right on top of each other.
