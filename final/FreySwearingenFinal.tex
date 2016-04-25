@@ -218,7 +218,7 @@ Thomas Swearingen\\
 
 K-means is a popular machine learning algorithm for clustering.
 As the amount of data has grown ever larger, the limitation of the classic K-mean algorithm has become more apparent.
-Specifically, the K-means algorithm is linear in data set size---the number of distance calculations is $O(nki)$, where $n$ is the number of data points, $k$ is the number of desired clusters, and $i$ is the number of iterations.
+Specifically, the K-means algorithm is linear in data set size---the number of distance calculations is $O(nkid)$, where $n$ is the number of data points, $k$ is the number of desired clusters, $i$ is the number of iterations, and $d$ is the number of dimensions.
 This linearity reduces the usability of the algorithm with large datasets.
 However, Ding \textit{et al.} propose Yinyang K-means~\cite{Ding2015} which seeks to solve this problem.
 The authors assert Yinyang K-means can be used in place of classical K-means with no extra conditions or requirements while simultaneously achieving an order of magnitude higher performance.
@@ -244,7 +244,7 @@ The first lemma is used to avoid calculating distances to centers in cases where
 The second lemma lets the algorithm use a lower bound $l\leq d(x,b)$, where $x$ is any data point and $b$ is any center.
 As long as center $b$ does not move too much in an iteration, then $l$ can be used as $d(x,b)$ without actually calculating the distance.
 Empirically, Elkan's algorithm speeds up K-means by factors of 1.50 to 351.
-The algorithm performs better with higher $k$ and lower dimensionality - of the four public datasets used in evaluation, performance increased as $k$ varied from 3 to 20 to 100 and dimensionality decreased from 784 to 2.
+The algorithm performs better with higher $k$ and lower dimensionality: of the four public datasets used in evaluation, performance increased as $k$ varied from 3 to 20 to 100 and dimensionality decreased from 784 to 2.
 
 In one work from the approximation tack, \textit{Sculley} \cite{Sculley2010} uses mini batches to greatly improve on the accuracy of the online stochastic gradient descent method demonstrated by \textit{Battou and Bengio}~\cite{Bottou1995}.
 In this approach, Sculley first finds the closest centers to each data point in the mini batch.
@@ -363,7 +363,7 @@ Two examples are shown in Figure \ref{fig:dataexamples}.
 \subsection{Properties}
 
 \subsubsection{Definitions}
-We define parameters used in the Yinyang K-Means method here.
+We define the parameters used in the Yinyang K-Means method here.
 Since Yinyang K-Means is an iterative method, we consider what happens between iterations $i$ and $i+1$ until the convergence condition is met.
 Let $\mathcal{C}$ be the set of clusters centers at iteration $i$ and $\mathcal{C}'$ be the set of clusters at iteration $i+1$.
 Let $c$ be a single cluster in $\mathcal{C}$ at iteration $i$ and $c'$ be a single cluster in $\mathcal{C}'$ at iteration $i+1$.
