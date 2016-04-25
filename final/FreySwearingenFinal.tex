@@ -531,10 +531,9 @@ d \func{x, p'} < lb \func{x, G_i} - \delta \func{c}
 \noindent
 \textbf{Intuition}:
 We know that $lb \func{x, G_i}$ represents a lower bound on the distance between $x$ and the closest cluster center in $G_i$ to which $x$ is not assigned.
-The $\delta \func{c}$ term is the distance $x$'s assigned cluster at iteration $i$ moves between iteration $i$ and $i+1$.
-Thus, the right-hand side of Equation \ref{eq:lfc} represents the closest possible distance a center in $G_i'$ other than $b \func{x}$ could possible be in iteration $i+1$.
-%Therefore, the Local-Filtering Condition test where it's possible a cluster center outside of $G_i'$ is becomes the closest cluster center for a point in $G_i$ during the cluster update step between iteration $i$ and iteration in $i+1$.
-%The Local-Filtering Condition accounts for the \textit{intergroup} interactions among data points and clusters.
+The $\delta \func{c}$ term is the distance the cluster $c$ moves between iteration $i$ and iteration $i$ and $i+1$.
+Thus, the right-hand side of Equation \ref{eq:lfc} represents the smallest possible distance between $x$ and $c'$.
+Therefore, if there $c'$ cannot be the closest cluster if there is a point with a distance smaller than the right-hand side of Equation \ref{eq:lfc}.
 
 \medskip % add a little space so subsubsubsections are not right on top of each other.
 
@@ -544,7 +543,7 @@ From the triangle inequality, we have
 \begin{equation*}
 d \func{x,c'} \geq d \func{x,c} - d \func{c,c'}
 \end{equation*}
-This theorem stems from the fact that $lb \func{x, G_i} + \delta \func{c}$ represents the minimum distance between $x$ and the closest center in $G_i'$ other than $c = b \func{x}$.
+This theorem stems from the fact that $lb \func{x, G_i} - \delta \func{c}$ represents the smallest possible distance between $x$ and $c'$.
 By definition, we know $d \func{x,c} \geq lb \func{x, G_i}$ and $d \func{c,c'} = \delta \func{c}$.
 Thus,
 \begin{equation*}
