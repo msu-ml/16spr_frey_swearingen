@@ -612,6 +612,23 @@ d \func{x, p'} < lb \func{x, G_i} - \delta \func{c} \tag*{\qed}
 % The following two commands are all you need in the
 % initial runs of your .tex file to
 % produce the bibliography for the citations in your paper.
+
+\setion{Implementation}
+The authors generously provide their code free to use.
+It is implemented using the C++ library GraphLab. We attempted to build this tool and run the code on our lab's computing server.
+However, we were unable to successfully compile the code after several days of attempting.
+
+In order to avoid any possible under-the-hood optimizations as well as to time the execution, we opted not to use Matlab's built-in K-means.
+Instead, we wrote our own version which allowed us to seed the initial centers as well as record the time per iteration and the number of iterations required to converge.
+
+Due to these difficulties, we chose to attempt to implement the algorithm ourselves in Matlab.
+This was an enlightening process for us.
+We found that the algorithm as described is not precise enough for easy implementation; there were even some errors in the paper's description.
+We consulted one of the authors for assistance and she was kind enough to answer several questions we had while working on our implementation.
+
+Despite this assistance, we were unable to successfully implement the algorithm.
+Our code runs and does cluster, but it does not achieve the exact same cluster assignments as traditional K-means, and it is also slower, both in number of iterations required to converge and time per iteration.
+
 \bibliographystyle{abbrv}
 \bibliography{yinyang}  % sigproc.bib is the name of the Bibliography in this case
 % You must have a proper ".bib" file
