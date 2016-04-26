@@ -1,4 +1,4 @@
-function [ new_assignments, numiter, timer ] = yykmeans( data, k, t, maxiter )
+function [ new_assignments, new_locations, numiter, timer ] = yykmeans( data, k, t, maxiter )
 %YYKMEANS implements Yinyang kmeans as described in Y. Ding, Y. Zhao, 
 % X. Shen, M. Musuvathi, and T. Mytkowicz. Yinyang k-means: A drop-in
 % replacement of the classic k-means with consistent speedup.
