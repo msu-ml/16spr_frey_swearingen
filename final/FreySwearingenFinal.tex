@@ -442,8 +442,18 @@ The $\max_{c \in \mathcal{C}} \delta \func{c}$ term will yield the distance of t
 We know that $ub \func{x}$ is the distance between $x$ and its assigned cluster $b \func{x}$.
 The $\delta \func{b \func{x}}$ term will yield the distance $x$'s assigned cluster at iteration $i$ moves between iteration $i$ and iteration $i+1$.
 The left-hand side of Equation~\ref{eq:gfc}, $lb \func{x} - \max_{c \in \mathcal{C}} \delta \func{c}$, indicates how close a cluster other than $b\func{x}$ could possibly be between iteration $i$ and $i+1$.
-The right-hand side of Equation~\ref{eq:gfc}, $ub \func{x} + \delta \func{b \func{x}}$, tell us the distance between $x$ and the location of $\delta \func{b \func{x}}$ at iteration $i+1$.
+The right-hand side of Equation~\ref{eq:gfc}, $ub \func{x} + \delta \func{b \func{x}}$, tell us the maximum possible distance between $x$ and the center of $b \func{x}$ at iteration $i+1$.
 Thus, $b' \func{x} = b\func{x}$ if Equation~\ref{eq:gfc} holds true, otherwise we need to compare the distances between $x$ and all $c \in \mathcal{C}$ to find $b' \func{x}$.
+Figure \ref{fig:gfc} illustrates this concept.
+
+\begin{figure}[!tb]
+\centering
+\subfloat[Success Case]{\includegraphics[width = 0.45\linewidth]{figures/GFC/GFCsuccess_labels.eps}~\includegraphics[width = 0.45\linewidth]{figures/GFC/GFCsuccess_base.eps}}
+
+\subfloat[Failure Case]{\includegraphics[width = 0.45\linewidth]{figures/GFC/GFCfailure_labels.eps}~\includegraphics[width = 0.45\linewidth]{figures/GFC/GFCfailure_base.eps}}
+\caption{The Global-Filtering Condition tests whether we need to compare $x$ to all the new centroid update or leave it assigned to the same cluster. If the test is successful (\ie Equation \ref{eq:gfc} holds), then $b' \func{x} = b \func{x}$. If the test fails (\ie Equation \ref{eq:gfc} does not hold), then we must calculate the distance between $x$ and all $c \in \mathcal{C}$ to find $b' \func{x}$.}
+\label{fig:gfc}
+\end{figure}
 
 \medskip % add a little space so subsubsubsections are not right on top of each other.
 
@@ -531,10 +541,19 @@ d \func{x, p'} < lb \func{x, G_i} - \delta \func{c}
 \noindent
 \textbf{Intuition}:
 We know that $lb \func{x, G_i}$ represents a lower bound on the distance between $x$ and the closest cluster center in $G_i$ to which $x$ is not assigned.
-The $\delta \func{c}$ term is the distance $x$'s assigned cluster at iteration $i$ moves between iteration $i$ and $i+1$.
-Thus, the right-hand side of Equation \ref{eq:lfc} represents the closest possible distance a center in $G_i'$ other than $b \func{x}$ could possible be in iteration $i+1$.
-%Therefore, the Local-Filtering Condition test where it's possible a cluster center outside of $G_i'$ is becomes the closest cluster center for a point in $G_i$ during the cluster update step between iteration $i$ and iteration in $i+1$.
-%The Local-Filtering Condition accounts for the \textit{intergroup} interactions among data points and clusters.
+The $\delta \func{c}$ term is the distance the cluster $c$ moves between iteration $i$ and iteration $i$ and $i+1$.
+Thus, the right-hand side of Equation \ref{eq:lfc} represents the smallest possible distance between $x$ and $c'$.
+Therefore, if there $c'$ cannot be the closest cluster if there is a point with a distance smaller than the right-hand side of Equation \ref{eq:lfc}.
+Figure \ref{fig:lfc} illustrates this concept.
+
+\begin{figure}[!tb]
+\centering
+\subfloat[Success Case]{\includegraphics[width = 0.45\linewidth]{figures/LFC/LFCsuccess_labels.eps}~\includegraphics[width = 0.45\linewidth]{figures/LFC/LFCsuccess_base.eps}}
+
+\subfloat[Failure Case]{\includegraphics[width = 0.45\linewidth]{figures/LFC/LFCfailure_labels.eps}~\includegraphics[width = 0.45\linewidth]{figures/LFC/LFCfailure_base.eps}}
+\caption{The Local-Filtering Condition tests whether $c'$ has the potential to be $b' \func{x}$. If the test is successful (\ie Equation \ref{eq:lfc} holds), then $c'$ has the potential to be $b' \func{x}$. If the test fails (\ie Equation \ref{eq:lfc} does not hold), then $c'$ cannot be $b' \func{x}$.}
+\label{fig:lfc}
+\end{figure}
 
 \medskip % add a little space so subsubsubsections are not right on top of each other.
 
@@ -544,7 +563,7 @@ From the triangle inequality, we have
 \begin{equation*}
 d \func{x,c'} \geq d \func{x,c} - d \func{c,c'}
 \end{equation*}
-This theorem stems from the fact that $lb \func{x, G_i} + \delta \func{c}$ represents the minimum distance between $x$ and the closest center in $G_i'$ other than $c = b \func{x}$.
+This theorem stems from the fact that $lb \func{x, G_i} - \delta \func{c}$ represents the smallest possible distance between $x$ and $c'$.
 By definition, we know $d \func{x,c} \geq lb \func{x, G_i}$ and $d \func{c,c'} = \delta \func{c}$.
 Thus,
 \begin{equation*}
