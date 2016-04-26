@@ -1,13 +1,13 @@
 close all; clear; clc;
 
-ClusterSizes = [2];
+ClusterSizes = [2, 3, 4, 5];
 FeatureSizes = [2];
-SampleSizes = [10];
+SampleSizes = [100];
 
 for NumClusters = ClusterSizes
     for NumSamples = SampleSizes
         for NumFeatures = FeatureSizes
-            AvgClusterDistance = NumFeatures * 100;
+            AvgClusterDistance = NumClusters * 100;
             
             clustermeans = GenerateMeans(NumClusters, NumFeatures, AvgClusterDistance, AvgClusterDistance, 10000);
             
