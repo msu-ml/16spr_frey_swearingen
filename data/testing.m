@@ -1,8 +1,8 @@
 clear
 maxiter = 1000;
 files = dir('Data*.mat');
-for file = files
-    name = file.name;
+for i = 1:size(files)
+    name = files(i).name;
     load(name);
     c_locations = strfind(name, 'c');
     k = str2num(name(6:c_locations(1) - 1));
