@@ -53,6 +53,9 @@
 \usepackage{amsmath}
 \usepackage[caption=false,font=footnotesize]{subfig}
 \usepackage{textcomp}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
 
 \newcommand{\func}[1]{\! \left( #1 \right)}
 \newcommand{\parn}[1]{\left( #1 \right)}
@@ -577,6 +580,44 @@ d \func{x, p'} < lb \func{x, G_i} - \delta \func{c} \tag*{\qed}
 
 
 \subsection{Algorithm}
+
+Algorithm \ref{alg:yykmean} describes the Yinyang K-means algorithm.
+It takes $X$, $k$, and $t$ as parameters.
+The $X$ parameter is the data.
+The $k$ is the number of clusters to partition the data into (same as classic K-means).
+The $t$ is the number of groups to use.
+As explained above, if $t$ is large then there are fewer distance calculations but more overhead.
+If $t$ is small, then there are more distance calculation but less overhead.
+
+\begin{algorithm}
+\caption{Yinyang K-means}
+\label{alg:yykmean}
+\begin{algorithmic}[1]
+\Procedure {yykmeans}{$X$, $k$, $t$}
+	\State Split $X$ into $t$ groups with 5 iterations of K-means
+	\State Obtain $ub$ and $lb \; \forall \; x \in X$ with 2 iter.\ of K-means
+	\State Obtain initial cluster assignments
+	\Repeat
+		\State Update cluster centers
+		\State Obtain $\max_{c \in G_i} \delta \func{c} \; \forall \; G_i$
+		\State Update $ub \func{x, G_i}$ and $lb \func{x, G_i} \; \forall \; G_i$
+		\ForAll {$x \in X$}
+			\If {Pass Global-Filter}
+				\State $b' \func{x} = b \func{x}$
+			\Else
+				\If {Pass Local-Filter}
+					\State $b' \func{x} = b \func{x}$
+				\Else
+					 \State Search for $b' \func{x}$
+				\EndIf
+			\EndIf
+		\EndFor
+	\Until{Assignments Unchanged}
+	\State \Return Assignments
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
 
 %\section{Working Plan}
 %
