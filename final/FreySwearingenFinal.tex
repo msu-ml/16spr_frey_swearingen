@@ -269,12 +269,12 @@ Tests that Drake and Hamerly performed on their algorithm show that for a medium
 
 It has been hypothesized that in order to gain popularity in practical use, a replacement for K-means must meet three requirements: equivalent clustering to traditional K-means, consistent and significant performance gains, and simple to use \cite{Ding2015}.
 
-\begin{figure*}[!tb]
-    \centering
-    \includegraphics[width=\textwidth]{figures/timeline.eps}
-    \caption{Project timeline showing key steps in the project. A solid color border indicates required step while a dotted line border indicates an optional step that will only be completed if there is time.}
-    \label{fig:timeline}
-\end{figure*}
+%\begin{figure*}[!tb]
+%    \centering
+%    \includegraphics[width=\textwidth]{figures/timeline.eps}
+%    \caption{Project timeline showing key steps in the project. A solid color border indicates required step while a dotted line border indicates an optional step that will only be completed if there is time.}
+%    \label{fig:timeline}
+%\end{figure*}
 
 \subsection{Yinyang K-means}
 The proposed work aims to satisfy those three requirements.
@@ -506,7 +506,7 @@ Classical K-means will yield better performance since the work is the same but G
 \noindent
 \textbf{Generalization to Group Filtering}:
 To combat the ``\textit{big-movers}" problem, the authors propose a generalization of the Global-Filtering Condition.
-Instead of applying the Global-Filter to the initial $k$ clusters, the data is split into $t$ groups (this is based on the initial clustering, a single cluster all goes into the same group).
+Instead of applying the Global-Filter to the initial $k$ clusters, the data is split into $t$ groups (this is based on the initial clustering, which is obtained with 5 iterations of classic K-means).
 The Global-Filtering condition will be applied to each group rather than each cluster.
 
 The number of groups is an important question.
