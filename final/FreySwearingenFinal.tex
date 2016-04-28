@@ -682,10 +682,19 @@ For example, on the data set with 100 clusters, 100 samples per cluster, 100 fea
 Our implementation also did poorly on the number of iterations, often requiring an order of magnitude more iterations than the classic implementation.
 For example, on the same data set mentioned above, classic K-means took 38 iterations while our implementation took 317 iterations.
 As a result of the slowness of convergence of our Yinyang implementation, many of the larger data sets that we were able to test did not even see convergence after the limit of 1,000 iterations.
+%figure here%
+A plot of the number of iterations taken on the largest data sets we ran (100 clusters, 1,000 samples per cluster, 100-1,000 features, and an inter-cluster distance of 100-1,000) can be seen in figure \verb|___|.
+In this figure, all the blue points are for classic K-means and red points are for Yinyang K-means.
+The x symbols represent the number of iterations taken on the data set for 100 features, the o symbols are the number of iterations taken for 500 features, and the + symbols are the number of iterations taken for 1,000 features.
 
 Finally, time per iteration was also worse in our implementation than in classic K-means, although the difference was not as great as the previous metrics.
 The time difference at the smallest data set tested, 100 clusters, 100 samples per cluster, 100 features, and an inter-cluster distance of 100, was 0.098 seconds per iteration compared to 0.327.
-This difference shrank as the data set got larger: the largest tested set, 100 clusters, 1,000 samples per cluster, 1,000 features, and an inter-cluster distance of 1,000, saw average per-iteration times of 12.145 seconds for classic K-means and 12.763 seconds for our implementation of Yinyang K-means.
+This difference shrank as the data set got larger: the largest tested sets (100 clusters, 1,000 samples per cluster, 100-1,000 features, and an inter-cluster distance of 100-1,000) saw average per-iteration times of 12.145 seconds for classic K-means and 12.763 seconds for our implementation of Yinyang K-means.
+These results can be seen in figure \verb|___|.
+The symbols represent the same data as previously, except the vertical axis shows mean time per iteration (MTPI) in seconds rather than total number of iterations.
+While previous metrics had dismal results, the MTPI of our implementation of Yinyang K-means approaches that of classic K-means as the data set complexity increases.
+This shows promise that for very large data or data with many features, our implementation might overtake the classic algorithm in time per iteration.
+However, the total number of iterations is still problematic, since all nine tests for the largest data sets timed out.
 
 \section{Contributions}
 
