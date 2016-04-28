@@ -1,6 +1,5 @@
 ## MATLAB files
 *.mat
-*.fig
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
