@@ -672,13 +672,20 @@ More details follow in the results section.
 
 \section{Results}
 The authors claim that their algorithm achieves the same clustering results as classic K-means when seeded with the same initial centers. Additionally, they claim that the number of iterations is the same, but each iteration happens 9.36 times faster on average.
+
+Due to the large size of many of our data sets and the difficulties encountered during implementation, we were not able to run comparisons on many data sets above 500 MB in size, which excluded any set with 1,000 or 10,000 clusters.
+
 Our implementation did not see these results come to fruition.
 Often, our algorithm dropped clusters that the classic K-means did not.
 For example, on the data set with 100 clusters, 100 samples per cluster, 100 features, and an inter-cluster distance of 100, classic K-means ended with 97 unique indices while our implementation of Yinyang K-means ended with two.
 
 Our implementation also did poorly on the number of iterations, often requiring an order of magnitude more iterations than the classic implementation.
-Due to the large size of many of our data sets and the difficulties encountered during implementation, we were not able to run comparisons on many data sets above 500 MB in size, which excluded any set with 1,000 or 10,000 clusters.
+For example, on the same data set mentioned above, classic K-means took 38 iterations while our implementation took 317 iterations.
+As a result of the slowness of convergence of our Yinyang implementation, many of the larger data sets that we were able to test did not even see convergence after the limit of 1,000 iterations.
 
+Finally, time per iteration was also worse in our implementation than in classic K-means, although the difference was not as great as the previous metrics.
+The time difference at the smallest data set tested, 100 clusters, 100 samples per cluster, 100 features, and an inter-cluster distance of 100, was 0.098 seconds per iteration compared to 0.327.
+This difference shrank as the data set got larger: the largest tested set, 100 clusters, 1,000 samples per cluster, 1,000 features, and an inter-cluster distance of 1,000, saw average per-iteration times of 12.145 seconds for classic K-means and 12.763 seconds for our implementation of Yinyang K-means.
 
 \section{Contributions}
 
