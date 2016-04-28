@@ -668,7 +668,17 @@ We found that the algorithm as described is not precise enough for easy implemen
 We consulted one of the authors for assistance and she was kind enough to answer several questions we had while working on our implementation.
 
 Despite this assistance, we were unable to successfully implement the algorithm.
-Our code runs and does cluster, but it does not achieve the exact same cluster assignments as traditional K-means, and it is also slower, both in number of iterations required to converge and time per iteration.
+More details follow in the results section.
+
+\section{Results}
+The authors claim that their algorithm achieves the same clustering results as classic K-means when seeded with the same initial centers. Additionally, they claim that the number of iterations is the same, but each iteration happens 9.36 times faster on average.
+Our implementation did not see these results come to fruition.
+Often, our algorithm dropped clusters that the classic K-means did not.
+For example, on the data set with 100 clusters, 100 samples per cluster, 100 features, and an inter-cluster distance of 100, classic K-means ended with 97 unique indices while our implementation of Yinyang K-means ended with two.
+
+Our implementation also did poorly on the number of iterations, often requiring an order of magnitude more iterations than the classic implementation.
+Due to the large size of many of our data sets and the difficulties encountered during implementation, we were not able to run comparisons on many data sets above 500 MB in size, which excluded any set with 1,000 or 10,000 clusters.
+
 
 \section{Contributions}
 
