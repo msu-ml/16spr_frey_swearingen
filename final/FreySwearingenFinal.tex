@@ -445,7 +445,7 @@ The $\max_{c \in \mathcal{C}} \delta \func{c}$ term will yield the distance of t
 We know that $ub \func{x}$ is the distance between $x$ and its assigned cluster $b \func{x}$.
 The $\delta \func{b \func{x}}$ term will yield the distance $x$'s assigned cluster at iteration $i$ moves between iteration $i$ and iteration $i+1$.
 The left-hand side of Equation~\ref{eq:gfc}, $lb \func{x} - \max_{c \in \mathcal{C}} \delta \func{c}$, indicates how close a cluster other than $b\func{x}$ could possibly be between iteration $i$ and $i+1$.
-The right-hand side of Equation~\ref{eq:gfc}, $ub \func{x} + \delta \func{b \func{x}}$, tell us the maximum possible distance between $x$ and the center of $b \func{x}$ at iteration $i+1$.
+The right-hand side of Equation~\ref{eq:gfc}, $ub \func{x} + \delta \func{b \func{x}}$, tells us the maximum possible distance between $x$ and the center of $b \func{x}$ at iteration $i+1$.
 Thus, $b' \func{x} = b\func{x}$ if Equation~\ref{eq:gfc} holds true, otherwise we need to compare the distances between $x$ and all $c \in \mathcal{C}$ to find $b' \func{x}$.
 Figure \ref{fig:gfc} illustrates this concept.
 
@@ -501,7 +501,7 @@ The Global-Filtering Condition is sensitive to ``\textit{big-movers}".
 That is, if $\max_{c \in \mathcal{C}} \delta \func{c}$ is large, then Equation \ref{eq:gfc} will be rarely satisfied.
 Therefore, we will be forced to calculate the distance between $x$ and \textit{all} of the cluster centers.
 The speed-up gained by a reduction in the number of distance calculations will be lost.
-Classical K-means will yield better performance since the work is the same but Global-Filtering Condition will incur additional overhead in maintain the upper and lower bounds for each point.
+Classical K-means will yield better performance since the work is the same but the Global-Filtering Condition will incur additional overhead in maintain the upper and lower bounds for each point.
 
 
 \medskip % add a little space so subsubsubsections are not right on top of each other.
@@ -663,14 +663,14 @@ We consulted with Kelly Climer and Antonio Gurgel, the CSE system administrators
 
 The authors distribute their code with the GraphLab package included.
 However, the GraphLab package requires the LibEvent package.
-However, the GraphLab was unable to download this package in it's configuration process.
+However, the GraphLab was unable to download this package in its configuration process.
 This is because in the time since the authors published the Yinyang K-means code, the LibEvent package moved from \texttt{sourceforge.com} to \texttt{github.com}.
 So the links were no longer active and GraphLab could no longer download them.
 We manually edited the GraphLab CMakeFiles to update the \texttt{sourceforge} links to \texttt{github} links.
 However, it seems something changed in LibEvent's move as the package downloaded was missing a file that CMake expected to find in the package.
 
-This seemed to become lost cause, so we next tried to download the latest version of GraphLab and use it with the \texttt{yykmeans.cpp} distributed by the authors.
-However, since the time that the paper was presented in ICML in the Summer of 2015, it appears GraphLab was had a significant change to it's API.
+This seemed to become a lost cause, so we next tried to download the latest version of GraphLab and use it with the \texttt{yykmeans.cpp} distributed by the authors.
+However, since the time that the paper was presented in ICML in the summer of 2015, it appears GraphLab was had a significant change to its API.
 One of the header files used in \texttt{yykmeans.cpp} was nowhere to be found in the latest version.
 Additionally, many of the objects in GraphLab had been changed in the way that they are used.
 So, it seemed that this option was not viable.
@@ -680,8 +680,8 @@ We had always planned to implement the algorithm ourselves to increase our under
 We found that the algorithm as described is not precise enough for easy implementation; there were even some errors in the paper's description.
 We consulted one of the authors for assistance and she was kind enough to answer several questions we had while working on our implementation.
 
-In order to make a more fair comparison we implemented our own K-means algorithm to avoid any possible under-the-hood optimizations that may exists in the native MATLAB version.
-Instead, we wrote our own version which allowed us to seed the initial centers as well as record the time per iteration and the number of iterations required to converge.
+In order to make a more fair comparison we implemented our own K-means algorithm to avoid any possible under-the-hood optimizations that may exist in the native MATLAB version.
+Our own version which allowed us to seed the initial centers as well as record the time per iteration and the number of iterations required to converge.
 
 Despite assistance from the authors, we were unable to successfully implement the algorithm in such a way that replicates the author's results.
 More details follow in the results section.
@@ -708,7 +708,7 @@ Figure \ref{fig:clusterresult} shows an example of when a cluster is dropped and
 
 Our implementation also did poorly on the number of iterations, often requiring an order of magnitude more iterations than the classic implementation.
 For example, on the same data set mentioned above, classic K-means took 38 iterations while our implementation took 317 iterations.
-As a result of the slowness of convergence of our Yinyang implementation, many of the larger data sets that we were able to test did not even see convergence after the limit of 1,000 iterations.
+As a result of the slowness of convergence of our Yinyang implementation, many of the larger data sets that we were able to test did not even see convergence within the limit of 1,000 iterations.
 
 
 \begin{figure*}[!tb]
@@ -722,8 +722,8 @@ A plot of the number of iterations taken on the largest data sets we ran (100 cl
 In this figure, all the blue points are for classic K-means and red points are for Yinyang K-means.
 The x symbols represent the number of iterations taken on the data set for 100 features, the o symbols are the number of iterations taken for 500 features, and the + symbols are the number of iterations taken for 1,000 features.
 
-Finally, time per iteration was also worse in our implementation than in classic K-means, although the difference was not as great as the previous metrics.
-The time difference at the smallest data set tested, 100 clusters, 100 samples per cluster, 100 features, and an inter-cluster distance of 100, was 0.098 seconds per iteration compared to 0.327.
+Finally, time per iteration was also worse in our implementation than in classic K-means, although the difference was not as great as with the previous metrics.
+The time difference at the smallest data set tested (100 clusters, 100 samples per cluster, 100 features, and an inter-cluster distance of 100) was 0.098 seconds per iteration compared to 0.327.
 This difference shrank as the data set got larger: the largest tested sets (100 clusters, 1,000 samples per cluster, 100-1,000 features, and an inter-cluster distance of 100-1,000) saw average per-iteration times of 12.145 seconds for classic K-means and 12.763 seconds for our implementation of Yinyang K-means.
 These results can be seen in Figure \ref{fig:timeresult}.
 The symbols represent the same data as previously, except the vertical axis shows mean time per iteration (MTPI) in seconds rather than total number of iterations.
@@ -741,13 +741,13 @@ However, the total number of iterations is still problematic, since all nine tes
 \section{Conclusion}
 
 It is difficult to draw too many conclusions when the algorithm is obviously not working correctly.
-However, if we assume the authors method works, then Yinyang K-means does work as a ``drop-in" replacement of classic K-means.
+However, if we assume the authors' method works, then Yinyang K-means does work as a ``drop-in" replacement of classic K-means.
 By maintaining bound for each data point, the number of distance calculations is drastically reduced.
-In the author's work, they achieved a speed-up regardless of data set size, number of features, or number of clusters.
+In the authors' work, they achieved a speed-up regardless of data set size, number of features, or number of clusters.
 For these reasons, Yinyang K-means offers an improved clustering method.
 
 \section{Future Work}
-The most obvious step is to ensure our implementation matches the author's exactly.
+The most obvious step is to ensure our implementation matches the authors' exactly.
 This will allow us to determine whether we can replicate the authors results or not.
 The authors only suggest a value of $t$, so a more detailed study on this parameter could be useful.
 As $t$ varies, we could document the tradeoff in overhead versus the number of distance calculations needed.
@@ -760,7 +760,7 @@ In our opinion, we worked together well on this project.
 Ben wrote the introduction to this paper.
 Thomas generated the data and wrote the corresponding section in this paper.
 Thomas wrote the proof for the Triangle Inequality, Global-Filtering Condition, and Local-Filtering Condition.
-Ben implemented the algorithm in MATLAB and corresponded with the original authors when our results didn't match theirs.
+Ben implemented the algorithm in MATLAB and corresponded with the original authors when our results did not match theirs.
 We both worked to try and discover any bugs once we obtained results unlike the authors.
 Thomas prepared the theory section of the presentation while Ben prepared the result section.
 
